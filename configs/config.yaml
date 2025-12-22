@@ -1,0 +1,12 @@
+
+
+model_settings:
+  name: "stub-llm"
+
+patches:
+  prompt_patch: false
+  output_patch: false
+
+garak:
+  probes: []
+  output_patch: "results/"
