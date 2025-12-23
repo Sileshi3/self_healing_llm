@@ -3,6 +3,14 @@
 model_settings:
   name: "stub-llm"
 
+phi3model_settings:
+  name: "microsoft/Phi-3-mini-4k-instruct"
+  type: "local" # Helps your code know to load it locally
+  temperature: 0.0 # Set to 0 for consistent security testing
+
+garak:
+  probes: ["promptinject", "jailbreak"]
+
 patches:
   prompt_patch: false
   output_patch: false
