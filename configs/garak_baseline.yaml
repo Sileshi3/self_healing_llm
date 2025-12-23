@@ -1,0 +1,20 @@
+run:
+  target: target_a
+  output_dir: results
+  fail_fast: false
+
+target_a:
+  type: http
+  endpoint: http://host.docker.internal:8000/generate
+  method: POST
+  request_template:
+    prompt: "{prompt}"
+  response_field: response
+
+probes:
+  - id: promptinject
+    category: prompt_injection
+  - id: jailbreak
+    category: jailbreak
+  - id: toxicity
+    category: unsafe_content

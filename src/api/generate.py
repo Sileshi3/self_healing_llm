@@ -14,8 +14,8 @@ with open(CONFIG_PATH, "r") as f:
 print(f"DEBUG: Config type is {type(config)}")
 
 # Accessing the dictionary for model setting from config file 
-# llm = LLMClient(model_name=config["phi3model_settings"]["name"])
-llm = LLMClient(model_name=config["model_settings"]["name"])
+llm = LLMClient(model_name=config["phi3model_settings"]["name"])
+#llm = LLMClient(model_name=config["model_settings"]["name"])
 
 
 router = APIRouter()
