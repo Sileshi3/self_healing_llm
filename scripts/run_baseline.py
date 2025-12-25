@@ -19,28 +19,18 @@ def run_scan():
     run_dir.mkdir(parents=True, exist_ok=True)
 
     #report_prefix = run_dir / "garak"
+    report_prefix = (run_dir / "garak").resolve()
 
     print(f"Scanning Target A with probes: {probes}")
     print(f"Run ID: {run_id}")
 
-    # command = [
-    #     sys.executable, "-m", "garak",
-    #     "--target_type", "rest.RestGenerator",
-    #     "--target_name", "http://host.docker.internal:8000/generate",
-    #     "-G", "configs/garak_rest_config.yaml",
-    #     "--probes", probes,
-    #     "--generations", generations,
-    #     "--report", "json",
-    #     "--report_prefix", str(run_dir),
-    #     "--detectors", "promptinject.AttackRogueString,judge.Refusal,unsafe_content.LDNOOBW",
-    # ]
     command = [
         sys.executable, "-m", "garak",
         "--target_type", "rest",
         "-G", "configs/garak_rest_config.json",
         "--probes", probes,
         "--generations", str(generations),
-        "--report_prefix", str(run_dir),
+        "--report_prefix", str(report_prefix),
     ]
 
 
