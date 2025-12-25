@@ -8,28 +8,6 @@ Week 1 delivers the service skeleton + Docker + config loading.
 Week 2 integrates **Garak** and produces **raw logs + normalized summaries** per run.
 
 ## Repository Structure
-
-src/
-  main.py
-  api/
-    generate.py
-  core/
-    llm.py
-  models/
-    schemas.py
-configs/
-  config.yaml
-  garak_rest_config.json
-scripts/
-  run_baseline.py
-  normalize_garak.py
-results/
-  <run_id>/
-    raw/
-      garak.report.jsonl
-    summary.json
-    summary.csv
-tests/ 
 <img width="354" height="491" alt="image" src="https://github.com/user-attachments/assets/f9c04cae-5bf4-4094-b593-bfc27b9452e1" />
 
 
