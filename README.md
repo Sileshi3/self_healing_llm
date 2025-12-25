@@ -30,6 +30,8 @@ results/
     summary.json
     summary.csv
 tests/ 
+<img width="354" height="491" alt="image" src="https://github.com/user-attachments/assets/f9c04cae-5bf4-4094-b593-bfc27b9452e1" />
+
 
 # Week 1 — Service skeleton + Docker + config
 ## 1 Setup (Local) 
