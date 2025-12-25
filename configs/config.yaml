@@ -7,10 +7,7 @@ phi3model_settings:
   name: "microsoft/Phi-3-mini-4k-instruct"
   type: "local" # Helps my code know to load it locally
   temperature: 0.0  
-
-garak:
-  probes: ["promptinject","dan", "jailbreak"]
-  generations: 5
+  max_new_tokens: 16
 
 patches:
   prompt_patch: false
@@ -18,4 +15,12 @@ patches:
 
 garak_:
   probes: []
+  generations: 2
   output_patch: "results/"
+ 
+# Week 2 Addition: Focus on these specific attack types
+garak_settings:
+  probes:
+    - promptinject
+  generations: 1
+  output_dir: "results/"

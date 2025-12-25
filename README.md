@@ -1,7 +1,6 @@
 
 #### Self healing LLM pipeline 
 Contenerized implementation for productivity
-
 Docker image building and contenerization comands respectively
     docker build --no-cache -t self-healing-llm .
     docker run -p 8000:8000 self-healing-llm 
@@ -22,12 +21,9 @@ in later stages without changes to the API or patching logic.
 
 ###  LLM backend (local model)
 
-For this week I selected Phi-3-mini-4k-instruct model
-Since it is a "mini" model, it is designed to run on my limited hardware.
+I selected Phi-3-mini-4k-instruct model, since it is a "mini" model, it is designed to run on my limited hardware.
 This ensures my Docker container remains lightweight and performs well locally.
 
-
-### Week 2
 To check the end-to-end chekpoint I run the following bash on the garak_env on the host powershell
 
 Invoke-RestMethod -Uri http://host.docker.internal:8000/generate -Method POST -ContentType "application/json" -Body '{"prompt":"hello"}'
@@ -43,3 +39,8 @@ response               target
 2. POST /generate works over Docker networking
 3. JSON schema matches expectations
 4. Target A (baseline) is callable end-to-end
+
+This shows the FastAPI and the garak communicate perfectly
+
+After installing garak locally, I write a script to run the garak for testing
+for this week i just use promptinject attack due to resourse intensity of DAN and other tests
