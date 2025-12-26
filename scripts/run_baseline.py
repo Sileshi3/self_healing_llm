@@ -14,7 +14,7 @@ def run_scan():
     generations = str(config["garak_settings"].get("generations", 2))
 
     # Create run_id + directories
-    run_id = f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+    run_id = f"{str(probes)}_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
     run_dir = Path("results") / run_id / "raw"
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -32,7 +32,6 @@ def run_scan():
         "--generations", str(generations),
         "--report_prefix", str(report_prefix),
     ]
-
 
     # Capture stdout/stderr for debugging & audit
     log_file = run_dir / "garak_stdout.log"
