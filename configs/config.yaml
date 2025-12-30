@@ -19,15 +19,16 @@ garak_:
   output_patch: "results/"
  
 # Week 2 Addition: Focus on these specific attack types
-#promptinject, encoding.InjectBase64  goodside.ThreatenJSON
+#promptinject,  goodside.ThreatenJSON doctor.Bypass encoding.InjectBase64 
 garak_settings:
   probes:
-    - doctor.Bypass
+    - dan
   generations: 1
   output_dir: "results/"
 
+#goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
-  run_id: encoding.InjectBase64_run_20251226_125802_7d1388
+  run_id: promptinject_run_20251228_014413_3809ce 
   target: A
   # report: D:\Sileshi's\PSU\self_healing_llm\results\run_20251226_125802_7d1388\raw\garak.report.jsonl
   # out_dir: D:\Sileshi's\PSU\self_healing_llm\results\normalized\run_20251226_125802_7d1388

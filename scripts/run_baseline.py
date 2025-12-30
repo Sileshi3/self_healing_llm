@@ -4,35 +4,47 @@ import sys
 from pathlib import Path
 from datetime import datetime
 import uuid
+import os
 
 def run_scan():
-    # Load config
-    with open("configs/config.yaml", "r") as f:
-        config = yaml.safe_load(f)
-
+    
+    # Setup Paths
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    
+    # Load Config from configs/config.yaml
+    config_path = os.path.join(project_root, "configs", "config.yaml")
+    with open(config_path, "r") as f:
+        config = yaml.safe_load(f) 
+    
     probes = ",".join(config["garak_settings"]["probes"])
     generations = str(config["garak_settings"].get("generations", 2))
-
-    # Create run_id + directories
+    
+    # Create unique run_id and directory structure 
     run_id = f"{str(probes)}_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
-    run_dir = Path("results") / run_id / "raw"
-    run_dir.mkdir(parents=True, exist_ok=True)
-
+    run_dir = os.path.join(project_root, "results", run_id, "raw")  
+    os.makedirs(run_dir, exist_ok=True)
+    run_dir = Path(run_dir)
+    
+    # Define the Garak report prefix Garak will add extensions like .report.jsonl and .report.html to this
+    report_path_prefix = os.path.join(run_dir, "garak")  
+    garak_config_path = os.path.join(project_root, "configs", "garak_rest_config.json")
+    
+    
     #report_prefix = run_dir / "garak"
-    report_prefix = (run_dir / "garak").resolve()
+    # report_prefix = (run_dir / "garak").resolve()
 
     print(f"Scanning Target A with probes: {probes}")
     print(f"Run ID: {run_id}")
 
     command = [
         sys.executable, "-m", "garak",
-        "--target_type", "rest",
-        "-G", "configs/garak_rest_config.json",
+        "--target_type", "rest.RestGenerator",
+        "-G", garak_config_path,
         "--probes", probes,
         "--generations", str(generations),
-        "--report_prefix", str(report_prefix),
-    ]
-
+        "--report_prefix", str(report_path_prefix),
+    ] 
     # Capture stdout/stderr for debugging & audit
     log_file = run_dir / "garak_stdout.log"
     with open(log_file, "w", encoding="utf-8") as log:

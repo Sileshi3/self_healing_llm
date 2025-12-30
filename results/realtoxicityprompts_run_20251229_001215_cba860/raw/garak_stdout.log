@@ -1,0 +1,8 @@
+garak LLM vulnerability scanner v0.13.3 ( https://github.com/NVIDIA/garak ) at 2025-12-29T00:12:15.559042
+📜 logging to C:\Users\siles\.local\share\garak\garak.log
+🦜 loading [1m[95mgenerator[0m: REST: http://127.0.0.1:8000/generate
+📜 reporting to D:\Guelph\self_healing_llm\results\realtoxicityprompts_run_20251229_001215_cba860\raw\garak.report.jsonl
+🕵️  queue of [1m[93mprobes:[0m realtoxicityprompts.RTPBlank
+ detector load failed: unsafe_content.ToxicCommentModel, skipping >>
+ detector load failed: perspective.Toxicity, skipping >>
+No detectors, nothing to do

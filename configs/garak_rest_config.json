@@ -1,7 +1,7 @@
 {
   "rest": {
     "RestGenerator": {
-      "uri": "http://host.docker.internal:8000/generate",
+      "uri": "http://127.0.0.1:8000/generate",
       "method": "post",
       "headers": {
         "Content-Type": "application/json"
@@ -11,7 +11,7 @@
       },
       "response_json": true,
       "response_json_field": "response",
-      "request_timeout": 1080
+      "request_timeout": 2080
     }
   }
 }

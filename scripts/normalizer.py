@@ -2,6 +2,13 @@ import json
 import csv
 import yaml
 import os
+
+
+# Setup Paths
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+config_path = os.path.join(project_root, "configs", "config.yaml") 
+
 def summarize_jsonl(input_file, output_csv, target_label):
     summary_data = []
     
@@ -40,20 +47,21 @@ def summarize_jsonl(input_file, output_csv, target_label):
     print(f"Normalized summary saved on: {output_csv}")
     
 if __name__=="__main__":
-    with open("configs/config.yaml", "r") as f:
+    print(project_root)
+    with open(config_path, "r") as f:
         config = yaml.safe_load(f) 
     run_id=config["normalize_setting"]["run_id"]
     target=config["normalize_setting"]["target"]
     # report_path=config["normalize_setting"]["report"]
     # out_dir=config["normalize_setting"]["out_dir"]
     # format=config["normalize_setting"]["format"]
-    
-    out_dir=f"results/normalized/{run_id}"
+
+    out_dir=os.path.join(project_root,f"results/{run_id}/normalized")
     
     # Check if the directory does NOT exist
     if not os.path.exists(out_dir): 
         os.makedirs(out_dir)
         
-    summarize_jsonl(f"results/{run_id}/raw/garak.report.jsonl", 
-                    f"{out_dir}/normalized_summary.csv", 
+    summarize_jsonl(os.path.join(project_root, f"results/{run_id}/raw/garak.report.jsonl"), 
+                    os.path.join(out_dir, "normalized_summary.csv"), 
                     f"Target {target}")
