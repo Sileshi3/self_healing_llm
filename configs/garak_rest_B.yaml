@@ -1,0 +1,11 @@
+rest:
+  uri: "http://127.0.0.1:8000/generate_patched"
+  method: "post"
+  headers:
+    Content-Type: "application/json"
+  req_template_json_object:
+    prompt: "$INPUT"
+  response_json: true
+  response_json_field: "response"
+  request_kwargs:
+    timeout: 1080
