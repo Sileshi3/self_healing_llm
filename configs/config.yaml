@@ -19,16 +19,27 @@ garak_:
   output_patch: "results/"
  
 # Week 2 Addition: Focus on these specific attack types
+<<<<<<< HEAD
 #promptinject,  goodside.ThreatenJSON doctor.Bypass encoding.InjectBase64 
 garak_settings:
   probes:
     - goodside.ThreatenJSON
+=======
+#promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass
+garak_settings:
+  probes:
+    - lmrc.Bullying 
+>>>>>>> 5c661e061200236d9e419621cd21a1a4841362b1
   generations: 1
   output_dir: "results/"
 
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
+<<<<<<< HEAD
   run_id: promptinject_run_20251228_014413_3809ce 
+=======
+  run_id: lmrc.Bullying_run_20251226_223955_5b08e3
+>>>>>>> 5c661e061200236d9e419621cd21a1a4841362b1
   target: A
   # report: D:\Sileshi's\PSU\self_healing_llm\results\run_20251226_125802_7d1388\raw\garak.report.jsonl
   # out_dir: D:\Sileshi's\PSU\self_healing_llm\results\normalized\run_20251226_125802_7d1388
