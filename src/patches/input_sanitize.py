@@ -17,20 +17,22 @@ class InputSanitizePatch(PromptPatch):
         original = prompt
         actions = []
 
+        # 1. Zero-width (invisible payloads)
         if self.strip_zero_width:
             prompt2 = ZERO_WIDTH_RE.sub("", prompt)
             if prompt2 != prompt:
                 actions.append("stripped_zero_width")
             prompt = prompt2
 
+        # 2. Excessive whitespace normalization
         if self.collapse_whitespace:
             prompt2 = re.sub(r"\s+", " ", prompt).strip()
             if prompt2 != prompt:
                 actions.append("collapsed_whitespace")
             prompt = prompt2
 
-        if self.remove_injection_markers:
-            # conservative: remove obvious delimiter spam
+        # 3. Remove common prompt injection markers such as "----------" or "IGNORE ANY PREVIOUS INSTRUCTIONS"
+        if self.remove_injection_markers: 
             prompt2 = prompt.replace("----------", "").replace("IGNORE ANY PREVIOUS", "IGNORE_PREVIOUS")
             if prompt2 != prompt:
                 actions.append("mutated_injection_markers")

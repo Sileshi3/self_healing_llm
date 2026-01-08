@@ -12,6 +12,7 @@ class OutputEnforcementPatch(OutputPatch):
         original = output or ""
         out = original[: self.max_output_chars]
 
+        # Enhance: check for blocklist terms (case-insensitive)
         hit = None
         low = out.lower()
         for term in self.blocklist:

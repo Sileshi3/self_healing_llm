@@ -162,5 +162,29 @@ response               target
 
 This shows the FastAPI and the garak communicate perfectly
 
-After installing garak locally, I write a script to run the garak for testing
-for this week i just use promptinject attack due to resourse intensity of DAN and other tests
+After installing garak locally, I write a script to run the garak for testing for this week i just use promptinject attack due to resourse intensity of DAN and other tests
+
+ 
+
+## Week 3: Patch Implementation & Unit Tests ✅
+
+Target B now applies 3 configurable patches against prompt injection attacks as example.
+
+### Implemented Patches
+
+1. **Patch 1**: System Prompt Safety Policy (prompt-level)
+   - Prepends safety instructions before original system prompt
+
+2. **Patch 2**: Input Normalization/Sanitization (prompt-level)  
+   - Strips blocked keywords, truncates length
+   **Techniques defended:**
+   - Zero-width Unicode (invisible payloads)
+   - Whitespace spam (tokenizer confusion)   
+   - Delimiter injection ("----------")
+   - Jailbreak phrases ("IGNORE PREVIOUS")   
+   - Jailbreak phrases ("IGNORE ANY PREVIOUS")
+
+3. **Patch 3**: Output Enforcement (post-generation)
+   - Replaces unsafe outputs with safe fallback  
+
+

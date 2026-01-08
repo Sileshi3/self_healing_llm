@@ -52,16 +52,21 @@ if __name__=="__main__":
         config = yaml.safe_load(f) 
     run_id=config["normalize_setting"]["run_id"]
     target=config["normalize_setting"]["target"]
-    # report_path=config["normalize_setting"]["report"]
-    # out_dir=config["normalize_setting"]["out_dir"]
-    # format=config["normalize_setting"]["format"]
 
-    out_dir=os.path.join(project_root,f"results/{run_id}/normalized")
+    out_dir=os.path.join(project_root,f"results/{run_id}/{target}/normalized")
     
     # Check if the directory does NOT exist
     if not os.path.exists(out_dir): 
-        os.makedirs(out_dir)
-        
-    summarize_jsonl(os.path.join(project_root, f"results/{run_id}/raw/garak.report.jsonl"), 
+        os.makedirs(out_dir)   
+    if target=="A": 
+        summarize_jsonl(os.path.join(project_root, f"results/{run_id}/{target}/raw/garak.report.jsonl"), 
                     os.path.join(out_dir, "normalized_summary.csv"), 
                     f"Target {target}")
+    if target=="B": 
+        summarize_jsonl(os.path.join(project_root, f"results/{run_id}/{target}/raw/garak_patched.report.jsonl"), 
+                    os.path.join(out_dir, "normalized_summary.csv"), 
+                    f"Target {target}")
+    if target not in ["A","B"]:
+        raise ValueError("Target must be either A or B")
+    
+   

@@ -21,39 +21,36 @@ def run_scan():
     generations = str(config["garak_settings"].get("generations", 2))
     
     #Week 3: Run Garak scans for both targets A and B
+
+    #For Target A
     # Create unique run_id and directory structure for results Target A
     run_id = f"{str(probes)}_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
     run_dir = os.path.join(project_root, "results", run_id, "A","raw")  
-    os.makedirs(run_dir, exist_ok=True)
-    run_dir = Path(run_dir) 
-    report_path_prefix = os.path.join(run_dir, "garak")  
-    garak_config_path = os.path.join(project_root, "configs", "garak_rest_A.json")
-    
-    #For Target B
-    run_dir_B = os.path.join(project_root, "results", run_id, "B","raw")  
-    report_path_prefix_patched = os.path.join(run_dir_B, "garak_patched")
-    os.makedirs(run_dir_B, exist_ok=True)
-    run_dir_B = Path(run_dir_B)  
-    garak_config_path_B = os.path.join(project_root, "configs", "garak_rest_B.json")
-    
-        #report_prefix = run_dir / "garak"
-    # report_prefix = (run_dir / "garak").resolve()
+    os.makedirs(run_dir, exist_ok=True) 
+    report_path_prefix_A = os.path.join(run_dir, "garak")   
+    garak_config_path_A = os.path.join(project_root, "configs", "target_A_rest_config.json")    
 
     print(f"Scanning Target A with probes: {probes}")
     print(f"Run ID: {run_id}")
 
-    command = [
-        sys.executable, "-m", "garak",
+    command_A = [
+        sys.executable, "-m", "garak", 
         "--target_type", "rest.RestGenerator",
-        "-G", garak_config_path,
+        "-G", garak_config_path_A,
         "--probes", probes,
         "--generations", str(generations),
-        "--report_prefix", str(report_path_prefix),
+        "--report_prefix", str(report_path_prefix_A),
     ] 
     # Capture stdout/stderr for debugging & audit
-    log_file = run_dir / "garak_stdout.log"
+    log_file = Path(run_dir) / "garak_stdout.log"
     with open(log_file, "w", encoding="utf-8") as log:
-        subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT)
+        subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
+
+    #For Target B
+    run_dir_B = os.path.join(project_root, "results", run_id, "B","raw")  
+    os.makedirs(run_dir_B, exist_ok=True) 
+    report_path_prefix_patched = os.path.join(run_dir_B, "garak_patched")
+    garak_config_path_B = os.path.join(project_root, "configs", "target_B_rest_config.json") 
 
 
     command_B= [
@@ -65,7 +62,7 @@ def run_scan():
         "--report_prefix", str(report_path_prefix_patched),
     ] 
     # Capture stdout/stderr for debugging & audit
-    log_file = run_dir_B / "garak_stdout.log"
+    log_file =  Path(run_dir_B) / "garak_stdout.log"
     with open(log_file, "w", encoding="utf-8") as log:
         subprocess.run(command_B, check=True, stdout=log, stderr=subprocess.STDOUT)
         
