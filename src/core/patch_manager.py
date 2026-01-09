@@ -2,8 +2,12 @@ from __future__ import annotations
 # from ..patches.base import PromptPatch, OutputPatch
 # from dataclasses import dataclass
 
-from typing import List, Optional, Any
-# import inspect
+from typing import List, Optional, Any, Tuple
+from src.core.logging_config import get_logger
+from dataclasses import asdict  
+from src.patches.base import PatchLog
+
+logger = get_logger()
 
 class PatchManager:
     def __init__(self, prompt_patches: List, output_patches: List):
@@ -16,64 +20,57 @@ class PatchManager:
             return res[0]
         return res
 
-    def apply_prompt(self, prompt: str) -> str:
+    def apply_prompt_with_logs(self, prompt: str, request_id: str | None = None) -> Tuple[str, list]:
         #Run prompt-side patches in order. Accepts patches that return either a string or a (string, PatchLog) tuple.
 
         x = prompt
+        logs = []
         for p in self.prompt_patches:
-            if hasattr(p, "apply"):
-                try:
-                    res = p.apply(x)
-                except TypeError:
-                    # fallback to patch()
-                    if hasattr(p, "patch"):
-                        res = p.patch(x)
-                    else:
-                        raise
-            elif hasattr(p, "patch"):
-                res = p.patch(x)
-            else:
-                raise AttributeError(f"{p.__class__.__name__} has no apply()/patch()")
+            x, log = p.apply(prompt,x)  # patch returns (new_text, patchlog)
+            logs.append(log)
+        # log patch decision
+        logger.info(
+            "patches_applied_prompt",
+             extra={
+                "request_id": request_id,
+                "patches": [asdict(l) if hasattr(l, "__dict__") else str(l) for l in logs],
+                "prompt_len": len(prompt) if isinstance(prompt, str) else None,
+                "patched_prompt_len": len(x) if isinstance(x, str) else None,
+            },
 
-            x = self._extract_value(res)
+        )
+        return x, logs 
 
-        return x
+    def apply_prompt(self, prompt: str, request_id: str | None = None) -> str:
+        patched, _logs = self.apply_prompt_with_logs(prompt, request_id=request_id)
+        return patched
 
-    def apply_output(self, output: str, prompt: Optional[str] = None) -> str:
+    def apply_output_with_logs(self, prompt: str, output: str, request_id: str | None = None) -> Tuple[str, list[PatchLog]]:
         """Run output-side patches in order.
-
         Patches may implement either:
          - apply(prompt: str, output: str) -> (output, PatchLog)
          - apply(output: str) -> (output, PatchLog)
-
-        I try the two-arg form first if a `prompt` is provided, otherwise fall
-        back to single-arg calls.  
+        I try the two-arg form first if a `prompt` is provided, otherwise fall back to single-arg calls.  
         """
         x = output
+        logs: List[PatchLog] = []
         for p in self.output_patches:
-            res = None
-            # prefer two-arg form when prompt is available
-            if prompt is not None:
-                try:
-                    res = p.apply(prompt, x)
-                except TypeError:
-                    res = None
+            x, log = p.apply(prompt, x)  # (new_output, patchlog)
+            logs.append(log)
+        logger.info(
+            "patches_applied_output",
+            extra={
+                "request_id": request_id,
+                "patches": [asdict(l) if hasattr(l, "__dict__") else str(l) for l in logs],
+                "output_len": len(output) if isinstance(output, str) else None,
+                "patched_output_len": len(x) if isinstance(x, str) else None,
+            },
+        )
+        
+        return x, logs
+    
+    def apply_output(self, prompt: str, output: str, request_id: str | None = None) -> str:
+        patched, _logs = self.apply_output_with_logs(prompt, output, request_id=request_id)
+        return patched
+   
 
-            if res is None:
-                if hasattr(p, "apply"):
-                    try:
-                        res = p.apply(x)
-                    except TypeError:
-                        # try patch() if present
-                        if hasattr(p, "patch"):
-                            res = p.patch(x)
-                        else:
-                            raise
-                elif hasattr(p, "patch"):
-                    res = p.patch(x)
-                else:
-                    raise AttributeError(f"{p.__class__.__name__} has no apply()/patch()")
-
-            x = self._extract_value(res)
-
-        return x

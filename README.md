@@ -154,7 +154,7 @@ response               target
 --------               ------
 [stub-llm] Echo: hello A
 
-# The output proven
+### The output proven
 1. FastAPI is reachable from garak_env environment
 2. POST /generate works over Docker networking
 3. JSON schema matches expectations
@@ -166,7 +166,7 @@ After installing garak locally, I write a script to run the garak for testing fo
 
  
 
-## Week 3: Patch Implementation & Unit Tests ✅
+## Week 3: Patch Implementation & Unit Tests
 
 Target B now applies 3 configurable patches against prompt injection attacks as example.
 

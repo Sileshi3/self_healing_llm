@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
+from dataclasses import dataclass, field
 
 @dataclass
 class PatchLog:
     patch: str
     triggered: bool
     action: str
-    details: Optional[Dict[str, Any]] = None
+    # details: Optional[Dict[str, Any]] = None
+    details: Dict[str, Any] = field(default_factory=dict)
+
 
 class PromptPatch:
     name: str = "prompt_patch"

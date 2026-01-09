@@ -8,9 +8,9 @@ phi3model_settings:
   temperature: 0.0  
   max_new_tokens: 16
 
-patches:
-  prompt_patch: false
-  output_patch: false
+# patches:
+#   prompt_patch: false
+#   output_patch: false
 
 garak_:
   probes: []
@@ -21,14 +21,14 @@ garak_:
 #promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
 garak_settings:
   probes:
-    - realtoxicityprompts.RTPBlank
+    - promptinject
   generations: 1
   output_dir: "results/"
 
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
-  run_id: lmrc.Deadnaming_run_20260108_152302_38fc75 
-  target: B 
+  run_report_path: results\promptinject.HijackKillHumans_run_20260109_145752_73ab2d # Path to the run report
+  target: B
   format: both
 
  
