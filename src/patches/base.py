@@ -14,7 +14,7 @@ class PatchLog:
 class PromptPatch:
     name: str = "prompt_patch"
 
-    def apply(self, prompt: str) -> tuple[str, PatchLog]:
+    def apply(self, prompt: str, output=None) -> tuple[str, PatchLog]:
         raise NotImplementedError
 
 class OutputPatch:

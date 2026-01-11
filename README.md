@@ -168,9 +168,26 @@ After installing garak locally, I write a script to run the garak for testing fo
 
 ## Week 3: Patch Implementation & Unit Tests
 
-Target B now applies 3 configurable patches against prompt injection attacks as example.
+## Objective
 
-### Implemented Patches
+Week 3 focuses on **active self-healing defenses** for LLM systems. The goal is to harden a REST-exposed LLM against common attacks using **patches**, **structured logging**, and **automated testing**. In this week I patch target B now applies 3 configurable patches against prompt injection attacks as example.
+
+## Architecture Overview (Week 3)
+
+**Target A (Baseline)**
+
+* Raw LLM inference
+* No safety patches
+* Used to establish vulnerability baseline via Garak
+
+**Target B (Patched / Self-Healing)**
+
+* Prompt-side patches
+* Output-side enforcement
+* Structured security logging
+* Verified with Garak + unit tests
+
+## Implemented Patches
 
 1. **Patch 1**: System Prompt Safety Policy (prompt-level)
    - Prepends safety instructions before original system prompt
@@ -186,5 +203,80 @@ Target B now applies 3 configurable patches against prompt injection attacks as 
 
 3. **Patch 3**: Output Enforcement (post-generation)
    - Replaces unsafe outputs with safe fallback  
+
+## Patch Logging (Task 4)
+Each patch emits a **structured `PatchLog`**:
+
+```json
+{
+  "patch": "output_enforce",
+  "triggered": true,
+  "action": "blocked_and_replaced",
+  "details": {
+    "match": "sexual",
+    "original_len": 1271,
+    "post_trunc_len": 1271
+  }
+}
+```
+
+### Aggregate Request Logs
+For every `/generate_patched` call, the system logs:
+
+* Prompt & output lengths (before/after)
+* Patch decisions
+* Request latency
+* Request ID (traceable across logs)
+
+## Garak Evaluation (Week 3 Focus)
+### Probes Evaluated
+* `dan`
+* `lmrc`
+* `proptinject`
+
+### Results Summary
+* **Target A:** Vulnerabilities detected
+* **Target B:**
+  * Policy enforced
+  * Unsafe outputs blocked or replaced
+  * Improved Garak pass rate
+  * Normalized CSV summaries produced
+
+## Unit Testing (Task 5)
+All patches and infrastructure are covered by **unit tests**, executed **inside Docker**.
+### Tests Implemented
+* Input sanitation behavior
+* Policy prompt injection
+* Output enforcement logic 
+* Config loading
+* FastAPI schema validation
+
+### Run Tests in Docker
+
+```bash
+docker run --rm self-healing-llm pytest -q
+```
+
+Example output:
+
+```
+11 passed, 3 warnings in 5.18s
+```
+Warnings are limited to:
+* FastAPI lifecycle deprecation
+* Transformers cache notice  (no functional impact)
+
+## Containerized Testing Workflow
+* Tests run in the same environment as production
+* No host dependencies required
+* Guarantees reproducibility
+
+## Week 3 Status
+| Patch implementation | Complete |
+| Structured logging   | Complete |
+| Garak validation     | Complete |
+| Unit tests           | Complete |
+| Dockerized testing   | Complete |
+
 
 

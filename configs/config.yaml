@@ -21,13 +21,14 @@ garak_:
 #promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
 garak_settings:
   probes:
-    - promptinject
+    - dan
   generations: 1
   output_dir: "results/"
 
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
-  run_report_path: results\promptinject.HijackKillHumans_run_20260109_145752_73ab2d # Path to the run report
+  # Telative path to the run report
+  run_report_path: results\lmrc_run_20260109_220903_76c48d 
   target: B
   format: both
 
