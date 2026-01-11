@@ -9,7 +9,7 @@ class SystemPolicyPromptPatch(PromptPatch):
     def __init__(self, system_policy: str):
         self.system_policy = (system_policy or "").strip()
 
-    def apply(self, prompt: str, output: str):
+    def apply(self, prompt: str, output=None):
         if not isinstance(prompt, str):
             prompt = str(prompt)
             
@@ -39,4 +39,4 @@ class SystemPolicyPromptPatch(PromptPatch):
             details={"chars_added": len(patched) - len(prompt),
                      "policy_chars": len(self.system_policy),
                     }
-        ) 
+        )  

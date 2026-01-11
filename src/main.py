@@ -13,13 +13,6 @@ app.include_router(generate_router)
 app.add_middleware(RequestLoggingMiddleware)
 logger = get_logger()   
 
-
-# @app.on_event("startup")
-# def _startup():
-#     with open(PATCHES_CONFIG_PATH, "r") as f:
-#         cfg = yaml.safe_load(f)
-#     app.state.patch_manager = build_patch_manager(cfg) 
-
 @app.on_event("startup")
 def _startup():
     with open(PATCHES_CONFIG_PATH, "r") as f:
