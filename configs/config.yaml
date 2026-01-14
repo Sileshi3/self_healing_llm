@@ -3,37 +3,37 @@ model_settings:
   name: "stub-llm"
 
 phi3model_settings:
-  name: "microsoft/Phi-3-mini-4k-instruct"
+  # name: "microsoft/Phi-3-mini-4k-instruct"
+  # name: "google/gemma-2-2b-it"
+  name: "Qwen/Qwen2.5-3B-Instruct" 
+
   type: "local" # Helps my code know to load it locally
   temperature: 0.0  
   max_new_tokens: 16
-
-# patches:
-#   prompt_patch: false
-#   output_patch: false
 
 garak_:
   probes: []
   generations: 2
   output_patch: "results/"
  
-# Week 2 Addition: Focus on these specific attack types
-#promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
+# Week 2 and 3 Probes focus on these specific attack types
+#promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass 
+#promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
 garak_settings:
   probes:
-    - dan
+    - promptinject
   generations: 1
   output_dir: "results/"
 
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
   # Telative path to the run report
-  run_report_path: results\dan_run_20260109_224620_7455ef 
+  run_report_path: results\promptinject_run_20260113_114033_786e32
   target: A
   format: both
 
 comparison_settings:
-  run_report_path: results\lmrc_run_20260109_122110_266547 
+  run_report_path: results\promptinject_run_20260113_114033_786e32 
 
 
  
