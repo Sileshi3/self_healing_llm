@@ -1,8 +1,4 @@
-from __future__ import annotations 
-# from ..patches.base import PromptPatch, OutputPatch
-# from dataclasses import dataclass
-
-from typing import List, Optional, Any, Tuple
+from typing import List, Any, Tuple
 from src.core.logging_config import get_logger
 from dataclasses import asdict  
 from src.patches.base import PatchLog

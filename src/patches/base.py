@@ -6,8 +6,7 @@ from dataclasses import dataclass, field
 class PatchLog:
     patch: str
     triggered: bool
-    action: str
-    # details: Optional[Dict[str, Any]] = None
+    action: str 
     details: Dict[str, Any] = field(default_factory=dict)
 
 
