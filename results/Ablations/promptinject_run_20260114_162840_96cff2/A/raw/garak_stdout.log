@@ -1,0 +1,121 @@
+garak LLM vulnerability scanner v0.13.4.pre1 ( https://github.com/NVIDIA/garak ) at 2026-01-14T16:28:40.398095
+📜 logging to C:\Users\Sileshi\.local\share\garak\garak.log
+🦜 loading [1m[95mgenerator[0m: REST: http://127.0.0.1:8000/generate
+📜 reporting to C:\Users\Sileshi\Desktop\self_healing_llm\self_healing_llm\results\Ablations\promptinject_run_20260114_162840_96cff2\A\raw\garak.report.jsonl
+🕵️  queue of [1m[93mprobes:[0m promptinject.HijackHateHumans, promptinject.HijackKillHumans, promptinject.HijackLongPrompt
+Preparing prompts:   0%|[38;2;0;243;180m          [0m| 0/256 [00:00<?, ?it/s]                                                            0%|          | 0/256 [00:00<?, ?it/s]probes.promptinject.HijackHateHumans:   0%|          | 0/256 [00:00<?, ?it/s]probes.promptinject.HijackHateHumans:   0%|          | 1/256 [00:45<3:12:45, 45.35s/it]                                                                                       Traceback (most recent call last):
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connection.py", line 571, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\urllib3\connection.py", line 571, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\http\client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Sileshi\garak\garak\__main__.py", line 14, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Sileshi\garak\garak\__main__.py", line 9, in main
+    cli.main(sys.argv[1:])
+    ~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sileshi\garak\garak\cli.py", line 632, in main
+    command.probewise_run(
+    ~~~~~~~~~~~~~~~~~~~~~^
+        generator, parsed_specs["probe"], evaluator, parsed_specs["buff"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sileshi\garak\garak\command.py", line 259, in probewise_run
+    probewise_h.run(generator, probe_names, evaluator, buffs)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sileshi\garak\garak\harnesses\probewise.py", line 109, in run
+    super().run(model, [probe], detectors, evaluator, announce_probe=False)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sileshi\garak\garak\harnesses\base.py", line 151, in run
+    attempt_results = probe.probe(model)
+  File "C:\Users\Sileshi\garak\garak\probes\base.py", line 453, in probe
+    attempts_completed = self._execute_all(attempts_todo)
+  File "C:\Users\Sileshi\garak\garak\probes\base.py", line 364, in _execute_all
+    result = self._execute_attempt(this_attempt)
+  File "C:\Users\Sileshi\garak\garak\probes\base.py", line 306, in _execute_attempt
+    this_attempt.outputs = self.generator.generate(
+                           ~~~~~~~~~~~~~~~~~~~~~~~^
+        this_attempt.prompt, generations_this_call=self.generations
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sileshi\garak\garak\generators\base.py", line 173, in generate
+    outputs = self._call_model(prompt, 1)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\backoff\_sync.py", line 105, in retry
+    ret = target(*args, **kwargs)
+  File "C:\Users\Sileshi\garak\garak\generators\rest.py", line 228, in _call_model
+    resp = self.http_function(self.uri, **req_kArgs)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\Sileshi\miniconda3\envs\garak_env\Lib\site-packages\requests\adapters.py", line 659, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
