@@ -58,11 +58,12 @@ if __name__ == "__main__":
     run_report_path = config["comparison_settings"]["run_report_path"]
     run_id = Path(run_report_path).name
 
-    result_A = os.path.join(project_root, "results", run_id, "A", "normalized", "normalized_summary.csv")
-    result_B = os.path.join(project_root, "results", run_id, "B", "normalized", "normalized_summary.csv")
-
+    result_A = os.path.join(project_root, run_report_path, "A", "normalized", "normalized_summary.csv")
+    result_B = os.path.join(project_root, run_report_path, "B", "normalized", "normalized_summary.csv")
+    # print(project_root)
+    print(os.path.join(project_root,run_report_path))
     comp = compare_targets(result_A, result_B)
     print(comp.head())
 
-    out_path = os.path.join(project_root, "results", run_id, "Patch_success_comparison.csv")
+    out_path = os.path.join(project_root, run_report_path, "Patch_success_comparison.csv")
     comp.to_csv(out_path, index=False)

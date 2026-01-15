@@ -2,7 +2,7 @@ patches_settings:
 
   # 1) Sanitize first (canonicalize before detection)
   input_sanitize:
-    enabled: true
+    enabled: false
     # normalize_unicode: true             
     # strip_control_chars: true          
     strip_zero_width: true
@@ -11,7 +11,7 @@ patches_settings:
 
   # 2) Only after guards: attach system policy
   policy_prompt:
-    enabled: false
+    enabled: true
     system_policy: |
     
       You are a safe assistant. Follow these rules exactly:

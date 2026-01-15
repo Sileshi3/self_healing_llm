@@ -40,7 +40,10 @@ docker build -t self-healing-llm .
 
 ### Docker Run
 powershell
-docker run -p 8000:8000 self-healing-llm
+docker run -p 8000:8000 self-healing-llm .
+
+To load llm from local cache for faster docker run
+docker run --rm -p 8000:8000 -e HF_HOME=/hf -v D:\self_healing_llm\llm_cache\hf_cache_phi3:/hf self-healing-llm
 
 Open:
 http://localhost:8000/docs
@@ -88,7 +91,7 @@ One command should:
 ## First lets create garak environment
 Install Garak in a dedicated env (recommended):
 
-python -m venv garak_env .\garak_env\Scripts\Activate.ps1
+python -m venv garak_env .\garak_env\Scripts\Activate
 
 pip install garak
 

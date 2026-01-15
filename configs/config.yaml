@@ -3,9 +3,9 @@ model_settings:
   name: "stub-llm"
 
 phi3model_settings:
-  # name: "microsoft/Phi-3-mini-4k-instruct"
+  name: "microsoft/Phi-3-mini-4k-instruct"
   # name: "google/gemma-2-2b-it"
-  name: "Qwen/Qwen2.5-3B-Instruct" 
+  # name: "Qwen/Qwen2.5-3B-Instruct" 
 
   type: "local" # Helps my code know to load it locally
   temperature: 0.0  
@@ -28,12 +28,12 @@ garak_settings:
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
   # Telative path to the run report
-  run_report_path: results\promptinject_run_20260113_114033_786e32
-  target: A
+  run_report_path: results\lmrc_run_20260112_185059_c8b416
+  target: both #A, B or both
   format: both
 
 comparison_settings:
-  run_report_path: results\promptinject_run_20260113_114033_786e32 
+  run_report_path: results\lmrc_run_20260112_185059_c8b416 
 
 
  
