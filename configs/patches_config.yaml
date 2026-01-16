@@ -2,7 +2,7 @@ patches_settings:
 
   # 1) Sanitize first (canonicalize before detection)
   input_sanitize:
-    enabled: true
+    enabled: false
     # normalize_unicode: true             
     # strip_control_chars: true          
     strip_zero_width: true
@@ -54,7 +54,7 @@ patches_settings:
 
   # 3) Output enforcement: block + redact leaks + keep outputs short
   output_enforce:
-    enabled: false
+    enabled: true
     max_output_chars: 1500            
     redact_policy_leaks: true
     redact_patch_logs: true

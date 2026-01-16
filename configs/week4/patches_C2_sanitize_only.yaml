@@ -1,0 +1,14 @@
+patches_settings:
+  policy_prompt:
+    enabled: false
+    system_policy: ""
+  input_sanitize:
+    enabled: true
+    strip_zero_width: true
+    collapse_whitespace: true
+    remove_injection_markers: true
+  output_enforce:
+    enabled: false
+    blocklist: []
+    replacement_text: "I can’t help with that."
+    max_output_chars: 1500

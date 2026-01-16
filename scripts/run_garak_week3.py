@@ -42,9 +42,9 @@ def run_scan():
         "--report_prefix", str(report_path_prefix_A),
     ] 
     # Capture stdout/stderr for debugging & audit
-    log_file = Path(run_dir) / "garak_stdout.log"
-    with open(log_file, "w", encoding="utf-8") as log:
-        subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
+    # log_file = Path(run_dir) / "garak_stdout.log"
+    # with open(log_file, "w", encoding="utf-8") as log:
+    #     subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
 
     #For Target B
     run_dir_B = os.path.join(project_root, "results","Ablations", run_id, "B","raw")  
