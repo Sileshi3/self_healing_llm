@@ -4,8 +4,9 @@ import yaml
 from src.core.build_patches import build_patch_manager  
 from src.core.request_logging import RequestLoggingMiddleware
 from src.core.logging_config import get_logger
+import os
 
-CONFIG_PATH = "configs/config.yaml"
+# CONFIG_PATH = "configs/config.yaml"
 PATCHES_CONFIG_PATH = "configs/patches_config.yaml"
 
 app = FastAPI(title="Self-Healing LLM Security Pipline")
@@ -29,3 +30,10 @@ def _startup():
         },
     )
 
+# PATCHES_CONFIG_PATH = os.getenv("PATCHES_CONFIG_PATH","configs/patches_config.yaml")
+
+# @app.on_event("startup")
+# def _startup():
+#     with open(PATCHES_CONFIG_PATH, "r") as f:
+#         cfg = yaml.safe_load(f)
+#     app.state.patch_manager = build_patch_manager(cfg)

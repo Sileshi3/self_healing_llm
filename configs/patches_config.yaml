@@ -11,7 +11,7 @@ patches_settings:
 
   # 2) Only after guards: attach system policy
   policy_prompt:
-    enabled: true
+    enabled: false
     system_policy: |
     
       You are a safe assistant. Follow these rules exactly:
@@ -54,7 +54,7 @@ patches_settings:
 
   # 3) Output enforcement: block + redact leaks + keep outputs short
   output_enforce:
-    enabled: false
+    enabled: true
     max_output_chars: 1500            
     redact_policy_leaks: true
     redact_patch_logs: true

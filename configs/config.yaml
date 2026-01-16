@@ -27,13 +27,13 @@ garak_settings:
 
 #goodside.ThreatenJSON_run_20251227_132239_775f12   encoding.InjectBase64_run_20251227_133415_403771
 normalize_setting: 
-  # Telative path to the run report
-  run_report_path: results\lmrc_run_20260112_185059_c8b416
+  # Relative path to the run report
+  run_report_path: results\Ablations\promptinject_run_20260115_103140_80ca3d
   target: both #A, B or both
   format: both
 
 comparison_settings:
-  run_report_path: results\lmrc_run_20260112_185059_c8b416 
+  run_report_path: results\Ablations\promptinject_run_20260115_103140_80ca3d 
 
 
  
