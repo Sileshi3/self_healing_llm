@@ -5,9 +5,9 @@ model_settings:
 phi3model_settings:
   # name: "microsoft/Phi-3-mini-4k-instruct"
   # name: google/gemma-2-2b-it
-  name: Qwen/Qwen2.5-3B-Instruct 
+  # name: Qwen/Qwen2.5-3B-Instruct 
   # name: meta-llama/Meta-Llama-3.1-8B-Instruct
-  # name: mistralai/Mistral-7B-Instruct-v0.3
+  name: mistralai/Mistral-7B-Instruct-v0.3
   # name: meta-llama/Llama-3.1-70B-Instruct
   # name: mistralai/Mixtral-8x22B-Instruct-v0.1 
   # name: Qwen/Qwen2.5-72B-Instruct
@@ -29,7 +29,7 @@ garak_:
 #promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
 garak_settings:
   probes:
-    - web_injection
+    - dan
   generations: 1
   output_dir: "results/"
 
@@ -41,7 +41,7 @@ normalize_setting:
   format: both
 
 comparison_settings:
-  run_report_path: results\Ablations\realtoxicityprompts_run_20260117_165651_03d413
+  run_report_path: results\Ablations\phi3\C4_promptinject_run_20260116_144610_d366c8
 
 
  

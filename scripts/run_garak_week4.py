@@ -41,12 +41,12 @@ def run_scan(project_root):
         subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
 
     #For Target B
-    run_dir_B = os.path.join(project_root, "results","Ablations", run_id, "B","raw")  
+    run_dir_B = os.path.join(project_root, "results\\Ablations", run_id, "B","raw")  
     os.makedirs(run_dir_B, exist_ok=True) 
     report_path_prefix_patched = os.path.join(run_dir_B, "garak_patched")
     garak_config_path_B = os.path.join(project_root, "configs", "target_B_rest_config.json") 
 
-    run_path=os.path.join(project_root, "results","Ablations", run_id)
+    run_path=os.path.join(project_root, "results\\Ablations", run_id)
 
     command_B= [
         sys.executable, "-m", "garak",

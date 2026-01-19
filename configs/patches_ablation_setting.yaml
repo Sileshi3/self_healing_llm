@@ -1,8 +1,8 @@
 ablation_setting: 
   policy_prompt:
-    enabled: false
+    enabled: true
   input_sanitize:
-    enabled: false
+    enabled: true
   output_enforce:
     enabled: true
     
