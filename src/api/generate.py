@@ -60,7 +60,9 @@ def generate_patched(req: GenerateRequest, request: Request):
     pm = request.app.state.patch_manager
     
     raw_prompt = extract_text_prompt(req.prompt)
-    logger.info("generate_B_called", extra={"request_id": request_id, "prompt_len": len(raw_prompt)})
+    logger.info("generate_B_called", 
+                extra={"request_id": request_id, 
+                       "prompt_len": len(raw_prompt)})
 
     patched_prompt, prompt_logs = pm.apply_prompt_with_logs(raw_prompt, request_id=request_id)
 

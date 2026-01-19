@@ -8,6 +8,7 @@ import os
 
 # CONFIG_PATH = "configs/config.yaml"
 PATCHES_CONFIG_PATH = "configs/patches_config.yaml"
+Abalation_conf="configs/patches_ablation_setting.yaml"
 
 app = FastAPI(title="Self-Healing LLM Security Pipline")
 app.include_router(generate_router)
@@ -16,10 +17,18 @@ logger = get_logger()
 
 @app.on_event("startup")
 def _startup():
-    with open(PATCHES_CONFIG_PATH, "r") as f:
-        cfg = yaml.safe_load(f)
 
-    pm = build_patch_manager(cfg)
+    # with open(PATCHES_CONFIG_PATH, "r") as f:
+    #     cfg = yaml.safe_load(f)
+    # with open(Abalation_conf, "r") as f:
+    #     ablation_cfg = yaml.safe_load(f)
+
+    with open(PATCHES_CONFIG_PATH, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+    with open(Abalation_conf, "r", encoding="utf-8") as f:
+        ablation_cfg = yaml.safe_load(f) or {} 
+
+    pm = build_patch_manager(cfg,ablation_cfg)
     app.state.patch_manager = pm
 
     logger.info(
@@ -29,11 +38,4 @@ def _startup():
             "output_patches": [p.name for p in pm.output_patches],
         },
     )
-
-# PATCHES_CONFIG_PATH = os.getenv("PATCHES_CONFIG_PATH","configs/patches_config.yaml")
-
-# @app.on_event("startup")
-# def _startup():
-#     with open(PATCHES_CONFIG_PATH, "r") as f:
-#         cfg = yaml.safe_load(f)
-#     app.state.patch_manager = build_patch_manager(cfg)
+ 
