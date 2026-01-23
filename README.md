@@ -1,10 +1,9 @@
 # Self-Healing LLM Security Pipeline
 
-A research prototype implementing an automated vulnerability detection and mitigation system for Large Language Models (LLMs). This project integrates [Garak](https://github.com/leondz/garak) - an LLM vulnerability scanner - with a multi-layered defense system that can detect, patch, and verify security issues in an iterative feedback loop.
+A research prototype implementing an automated vulnerability detection and mitigation system for LLM. This project integrates [Garak](https://github.com/leondz/garak) - an LLM vulnerability scanner - with a multi-layered defense system that can detect, patch, and verify security issues in an iterative feedback loop.
 
 ## Overview
-
-Large Language Models face security vulnerabilities including prompt injections, jailbreaks, toxic outputs, and data leakage. This pipeline implements a **Probe → Patch → Verify** cycle:
+LLM faces security vulnerabilities, including prompt injections, jailbreaks, toxic outputs, and data leakage. This pipeline implements a **Probe → Patch → Verify** cycle:
 
 1. **Probe**: Use Garak to scan the LLM for vulnerabilities
 2. **Patch**: Apply configurable defense mechanisms (prompt-level and output-level)
@@ -17,7 +16,6 @@ The system provides two REST endpoints for comparison:
 This work was completed as part of a 6-week research internship focusing on automated LLM security hardening.
 
 ## Tech Stack
-
 - **Python 3.10+**: Core language
 - **FastAPI**: REST API framework for LLM gateway
 - **Transformers** + **PyTorch**: LLM inference (supports local models)
@@ -26,12 +24,11 @@ This work was completed as part of a 6-week research internship focusing on auto
 - **YAML/JSON**: Configuration-driven architecture
 
 ## Repository Structure
-
 ```
 ├── configs/                    # Configuration files
 │   ├── config.yaml            # Main LLM and system settings
 │   ├── patches_config.yaml    # Patch behavior configuration
-│   ├── patches_ablation_setting.yaml  # Experimental conditions
+│   ├── patches_ablation_setting.yaml  # Experimental conditions for ablation studies 
 │   ├── target_A_rest_config.json      # Garak config for baseline
 │   ├── target_B_rest_config.json      # Garak config for patched
 │   └── week5/
@@ -50,8 +47,7 @@ This work was completed as part of a 6-week research internship focusing on auto
 │       └── output_enforce.py      # Output filtering (post-generation)
 ├── scripts/
 │   ├── run_garak_week4.py         # Run Garak against both targets
-│   ├── run_benign_suit_week5.py   # Benign regression evaluation
-│   └── week_4_data_extractor.py   # Extract ablation results
+│   └── run_benign_suit_week5.py   # Benign regression evaluation
 ├── tests/                      # Unit tests (pytest)
 ├── results/                    # Experiment outputs (Garak logs, summaries)
 ├── Dockerfile                  # Container definition
@@ -59,36 +55,29 @@ This work was completed as part of a 6-week research internship focusing on auto
 └── README.md                   # This file
 ```
 
-
 ## Quick Start
-
 ### Prerequisites
-
 - Python 3.10 or higher
 - Docker (for containerized deployment)
 - NVIDIA GPU with CUDA support (optional, for local model inference)
 - Hugging Face account with access to gated models (if using Meta Llama or similar)
 
 ### Installation
-
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
    cd self_healing_llm
    ```
-
 2. **Install Python dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
-
 3. **Install Garak** (in a separate environment recommended):
    ```bash
    python -m venv garak_env
    source garak_env/bin/activate  # On Windows: .\garak_env\Scripts\Activate
    pip install garak
    ```
-
 4. **Configure the LLM**:
    - Edit `configs/config.yaml` to set your model:
      ```yaml
@@ -97,13 +86,11 @@ This work was completed as part of a 6-week research internship focusing on auto
        max_new_tokens: 256
        temperature: 0.0
      ```
-
 5. **Configure patches** (optional):
    - Edit `configs/patches_config.yaml` to customize security policies
-   - Edit `configs/patches_ablation_setting.yaml` to enable/disable specific patches
+   - Edit `configs/patches_ablation_setting.yaml` to enable/disable specific patches for ablation experiments
 
 ### Running Locally (Development)
-
 ```bash
 # Start the FastAPI server
 uvicorn src.main:app --reload
@@ -111,19 +98,17 @@ uvicorn src.main:app --reload
 # Or if uvicorn is not in PATH:
 python -m uvicorn src.main:app --reload
 ```
-
 Access the API at `http://localhost:8000/docs`
 
 ### Running with Docker (Production)
-
 ```bash
 # Build the Docker image
-docker build -t self-healing-llm .
+docker build -t self-healing-llm.
 
 # Run with GPU support and model cache mounting
 docker run --rm -p 8000:8000 --gpus all \
   -e HF_HOME=/models/huggingface \
-  -e HUGGINGFACE_HUB_TOKEN=<your_hf_token> \
+  -e HUGGINGFACE_HUB_TOKEN=<your_hf_token> \ #For gated models (if used)
   -v /path/to/llm_cache:/models/huggingface \
   self-healing-llm
 ```
@@ -132,16 +117,13 @@ docker run --rm -p 8000:8000 --gpus all \
 ```powershell
 docker run --rm -p 8000:8000 --gpus all `
   -e HF_HOME=/models/huggingface `
-  -e HUGGINGFACE_HUB_TOKEN=<your_hf_token> `
+  -e HUGGINGFACE_HUB_TOKEN=<your_hf_token> ` #For gated models (if used)
   -v C:\path\to\llm_cache:/models/huggingface `
   self-healing-llm
 ```
 ## API Endpoints
-
 ### Target A (Baseline - No Patches)
-
 **Endpoint**: `POST /generate`
-
 **Request**:
 ```json
 {
@@ -158,9 +140,7 @@ docker run --rm -p 8000:8000 --gpus all `
 ```
 
 ### Target B (Patched - With Security Mitigations)
-
 **Endpoint**: `POST /generate_patched`
-
 **Request**:
 ```json
 {
@@ -189,13 +169,11 @@ docker run --rm -p 8000:8000 --gpus all `
 Invoke-RestMethod -Uri http://localhost:8000/generate `
   -Method POST `
   -ContentType "application/json" `
-  -Body '{"prompt":"What is the capital of France?"}'
+  -Body '{"prompt": "What is the capital of France?"}'
 ```
 
 ## System Architecture
-
 ### Patch Pipeline
-
 The patched endpoint (`/generate_patched`) applies security mitigations in two stages:
 
 **1. Prompt-Level Patches (Input):**
@@ -203,10 +181,9 @@ The patched endpoint (`/generate_patched`) applies security mitigations in two s
 - **Input Sanitization**: Normalizes Unicode, removes control characters, strips injection markers
 
 **2. Output-Level Patches (Post-Generation):**
-- **Output Enforcement**: Blocks outputs containing prohibited keywords, truncates excessive length, redacts policy leaks
+- **Output Enforcement**: Blocks outputs containing prohibited keywords, truncates excessive length, and redacts policy leaks
 
 ### Configuration System
-
 All behavior is controlled via YAML/JSON configs, allowing experiments without code changes:
 
 **Main Config** (`configs/config.yaml`):
@@ -222,11 +199,8 @@ All behavior is controlled via YAML/JSON configs, allowing experiments without c
 **Ablation Config** (`configs/patches_ablation_setting.yaml`):
 - Enable/disable individual patches for experimental conditions
 - Supports testing: baseline, prompt-only, output-only, full system
-
 ## Running Experiments
-
 ### Baseline Vulnerability Scan (Condition 0)
-
 Scan Target A (unpatched) to establish baseline vulnerabilities:
 
 ```bash
@@ -238,15 +212,14 @@ source garak_env/bin/activate  # Windows: .\garak_env\Scripts\Activate
 #   probes:
 #     - promptinject
 #     - dan
+#     - web_injection
 
 # Run Garak against Target A
 python scripts/run_garak_week4.py
 ```
-
 **Results** saved to: `results/Ablations/<run_id>/A/`
 
 ### Patched System Scan (Condition 4 - Full System)
-
 Enable all patches in `configs/patches_ablation_setting.yaml`:
 
 ```yaml
@@ -258,19 +231,13 @@ ablation_setting:
   output_enforce:
     enabled: true
 ```
-
 Run the same Garak probes against Target B:
-
 ```bash
 python scripts/run_garak_week4.py
 ```
-
 **Results** saved to: `results/Ablations/<run_id>/B/`
-
 ### Ablation Study (Individual Patches)
-
 Test each patch in isolation by enabling only one at a time:
-
 **Condition 1 (Policy Prompt Only)**:
 ```yaml
 ablation_setting: 
@@ -281,11 +248,9 @@ ablation_setting:
   output_enforce:
     enabled: false
 ```
-
 Repeat for Conditions 2 (input_sanitize only) and 3 (output_enforce only).
 
 ### Benign Regression Suite (Week 5)
-
 Measure impact on legitimate use cases:
 
 ```bash
@@ -298,29 +263,24 @@ This runs 29 benign prompts against both targets and produces:
 - Raw JSONL logs for detailed analysis
 
 ### Extracting Results
-
 Generate comparison summaries:
 
 ```bash
 python scripts/week_4_data_extractor.py
 ```
-
 Produces `Patch_success_comparison.csv` showing before/after metrics.
 
 ## Configuration Reference
-
 ### LLM Model Settings (`configs/config.yaml`)
-
 ```yaml
 llm_model_settings:
   name: "mistralai/Mistral-7B-Instruct-v0.3"  # Model identifier
-  type: "local"                                # "local" or "api"
-  temperature: 0.0                             # Generation randomness (0 = deterministic)
-  max_new_tokens: 256                          # Maximum response length
+  type: "local"                               # "local" or "api"
+  temperature: 0.0                            # Generation randomness (0 = deterministic)
+  max_new_tokens: 256                         # Maximum response length
 ```
 
 ### Patch Configuration (`configs/patches_config.yaml`)
-
 **Policy Prompt**:
 ```yaml
 patches_settings:
@@ -355,7 +315,6 @@ patches_settings:
 ```
 
 ### Garak Target Configuration
-
 **Target A** (`configs/target_A_rest_config.json`):
 ```json
 {
@@ -372,11 +331,8 @@ patches_settings:
   }
 }
 ```
-
 **Target B** - Same structure but `"uri": "http://127.0.0.1:8000/generate_patched"`
-
 ## Unit Testing
-
 Run all tests:
 
 ```bash
@@ -395,7 +351,6 @@ Test coverage includes:
 - Individual patch behavior (`test_patch_*.py`)
 
 ## Results and Evaluation
-
 ### Output Structure
 
 ```
@@ -416,40 +371,32 @@ results/
 ```
 
 ### Key Metrics
-
 **Security (Garak)**:
 - Successful attack rate (before vs. after patching)
 - Breakdown by vulnerability category (prompt injection, jailbreak, toxic content)
 
 **Utility (Benign Suite)**:
-- Strict pass rate: % prompts fully meeting criteria
+- Strict pass rate: % prompts fully meet criteria
 - Refusal rate: % benign prompts incorrectly blocked
-- Average response length
 
 ### Example Results (Mistral-7B-Instruct)
-
 ```
 Benign Suite - Overall Rates:
-condition  total  strict_pass_rate  utility_preserved_rate  avg_len  refusal_rate
-A          29     0.6897           0.6897                   820.21   0.0000
-B          29     0.5862           0.5862                   689.69   0.1379
+condition  total  strict_pass_rate   refusal_rate
+A          29     0.6897             0.0000
+B          29     0.5862             0.1379
 ```
-
-**Interpretation**: Patches reduced pass rate by ~10% and introduced 13.79% false positive refusal rate, demonstrating the security/utility trade-off.
+**Interpretation**: Patches reduced the pass rate by ~10% and introduced 13.79% false positive refusal rate, demonstrating the security/utility trade-off.
 
 ## Troubleshooting
-
 ### Garak Connection Issues
-
-If Garak can't reach the API running in Docker from Windows host:
-
+If Garak can't reach the API running in Docker from the Windows host:
 - Use `http://host.docker.internal:8000/generate` instead of `localhost`
 - Or run API locally (not in Docker) during Garak scans
 
 ### Model Loading Failures
-
 **401 Gated Repo Error**:
-- Ensure you have access on Hugging Face to the model
+- Ensure you have access to Hugging Face for the model
 - Use a valid `HUGGINGFACE_HUB_TOKEN` with read permissions
 
 **Missing Dependencies** (sentencepiece, protobuf):
@@ -457,23 +404,18 @@ If Garak can't reach the API running in Docker from Windows host:
 - Rebuild Docker image after updating requirements
 
 ### Short/Truncated Responses
-
 If responses are cut off mid-sentence:
 - Increase `max_new_tokens` in `configs/config.yaml`
 - Rebuild Docker image to pick up config changes
 
 ## Known Limitations
-
 1. **Keyword-based output filtering**: Simple blocklist approach causes false positives on educational content (e.g., "photosynthesis kills bacteria" triggers "kill")
-2. **Policy prompt overhead**: Adds ~200 tokens to every request, increasing latency and cost
-3. **Single-language support**: Currently optimized for English prompts/responses
-4. **No learning mechanism**: Patches are static; system doesn't adapt based on discovered vulnerabilities
+2. **Policy prompt overhead**: Adds tokens to every request, increasing latency and cost 
+3. **No learning mechanism**: Patches are static; system doesn't adapt based on discovered vulnerabilities
 
 ## Future Work
-
 - **Semantic filtering**: Replace keyword blocklist with ML-based content classifiers
-- **Adaptive patching**: Automatically generate/tune patches based on Garak findings
-- **Multi-language support**: Extend sanitization and detection to non-English text
+- **Adaptive patching**: Automatically generate/tune patches based on Garak findings 
 - **Performance optimization**: Cache policy prompts, batch requests
 - **Broader attack coverage**: Test against adversarial suffix attacks, model extraction
 
@@ -485,8 +427,7 @@ If responses are cut off mid-sentence:
 
 ## License
 
-[Specify your license here]
+- 
 
 ## Contact
-
-[Your contact information or project maintainer detail
+- sileshinibret123@gmail.com
