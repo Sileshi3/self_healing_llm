@@ -8,7 +8,7 @@ import os
 # Setup Paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(script_dir)
-config_path = os.path.join(project_root, "configs", "config.yaml") 
+config_path = os.path.join(project_root, "configs", "main_config.yaml") 
 
 def summarize_jsonl(input_file, output_csv, target_label):
     summary_data = []
@@ -47,35 +47,35 @@ def summarize_jsonl(input_file, output_csv, target_label):
     
     print(f"Normalized summary saved on: {output_csv}")
     
-if __name__=="__main__": 
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f) 
-    run_report_path=config["normalize_setting"]["run_report_path"]
-    target=config["normalize_setting"]["target"]
+# if __name__=="__main__": 
+#     with open(config_path, "r") as f:
+#         config = yaml.safe_load(f) 
+#     run_report_path=config["normalize_setting"]["run_report_path"]
+#     target=config["normalize_setting"]["target"]
 
-    run_id = Path(run_report_path).name  
-    out_dir=os.path.join(project_root,run_report_path) 
-    path_A=os.path.join(out_dir,f"A\\normalized")
-    path_B=os.path.join(out_dir,f"B\\normalized") 
-    os.makedirs(path_A, exist_ok=True)
-    os.makedirs(path_B, exist_ok=True)
+#     run_id = Path(run_report_path).name  
+#     out_dir=os.path.join(project_root,run_report_path) 
+#     path_A=os.path.join(out_dir,f"A\\normalized")
+#     path_B=os.path.join(out_dir,f"B\\normalized") 
+#     os.makedirs(path_A, exist_ok=True)
+#     os.makedirs(path_B, exist_ok=True)
      
-    if target=="A": 
-        summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak.report.jsonl"), 
-                    os.path.join(path_A, "normalized_summary.csv"), 
-                    f"Target {target}")
-    if target=="B": 
-        summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak_patched.report.jsonl"), 
-                    os.path.join(path_B, "normalized_summary.csv"), 
-                    f"Target {target}")
-    if target=='both':
-        summarize_jsonl(os.path.join(project_root, f'{out_dir}/A/raw/garak.report.jsonl'), 
-                    os.path.join(path_A,'normalized_summary.csv'), 
-                    "Target A") 
-        summarize_jsonl(os.path.join(project_root, f"{out_dir}/B/raw/garak_patched.report.jsonl"), 
-                    os.path.join(path_B, "normalized_summary.csv"), 
-                    "Target B")
-    if target not in ["A","B","both"]:
-        raise ValueError("Target must be either A or B")
+#     if target=="A": 
+#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak.report.jsonl"), 
+#                     os.path.join(path_A, "normalized_summary.csv"), 
+#                     f"Target {target}")
+#     if target=="B": 
+#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak_patched.report.jsonl"), 
+#                     os.path.join(path_B, "normalized_summary.csv"), 
+#                     f"Target {target}")
+#     if target=='both':
+#         summarize_jsonl(os.path.join(project_root, f'{out_dir}/A/raw/garak.report.jsonl'), 
+#                     os.path.join(path_A,'normalized_summary.csv'), 
+#                     "Target A") 
+#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/B/raw/garak_patched.report.jsonl"), 
+#                     os.path.join(path_B, "normalized_summary.csv"), 
+#                     "Target B")
+#     if target not in ["A","B","both"]:
+#         raise ValueError("Target must be either A or B")
     
    

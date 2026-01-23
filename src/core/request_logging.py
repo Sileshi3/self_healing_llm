@@ -4,7 +4,7 @@ from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-from src.core.logging_config import get_logger
+from src.core.config import get_logger
 
 logger = get_logger()
 

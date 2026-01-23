@@ -10,23 +10,28 @@ class LLMClient:
 
 """
 
-
 from transformers import pipeline
 import torch
+from src.core.config import get_logger 
+logger = get_logger()   
 
 
 class LLMClient:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, max_new_tokens: int, temperature: float = 0.0):
         self.model_name = model_name
+        self.max_new_tokens = max_new_tokens
+        self.temperature = temperature
         try:
             self.generator = pipeline(
                 "text-generation",
                 model=model_name,
-                device_map=-1 if torch.cuda.is_available() else None,
+                device_map='auto',
                 trust_remote_code=False,
             )
-        except Exception:
+        except Exception as e:
             # If model loading fails, fall back to a simple echo behavior
+            logger.error(f"Failed to load model {model_name}: {e}")
+            print(f"Failed to load model {model_name}: {e}", flush=True)
             self.generator = None
 
     def generate(self, prompt: str) -> str:
@@ -35,7 +40,13 @@ class LLMClient:
             return f"[{self.model_name}] Echo: {prompt}"
 
         # Call the text-generation pipeline with a plain prompt
-        output = self.generator(prompt, max_new_tokens=16, do_sample=False)
+        do_sample = self.temperature > 0.0
+        output = self.generator(
+            prompt, 
+            max_new_tokens=self.max_new_tokens, 
+            do_sample=do_sample,
+            temperature=self.temperature if do_sample else None
+        )
 
         # Typical pipeline output: a list with one dict containing 'generated_text'
         if isinstance(output, list) and len(output) > 0:
@@ -44,7 +55,7 @@ class LLMClient:
                 gen = first["generated_text"]
                 if isinstance(gen, str):
                     return gen
-                # Handle case where generated content is a list ofdicts
+                # Handle case where generated content is a list of dicts
                 if isinstance(gen, list):
                     parts = []
                     for item in gen:

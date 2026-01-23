@@ -5,8 +5,11 @@ from pathlib import Path
 from datetime import datetime
 import uuid
 import os
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+from src.core.config import load_config
 from garak_run_report_normalizer import summarize_jsonl
-from comparator import compare_targets
+from scripts.ablation_comparator import compare_targets
 
 def run_scan(project_root):
       
@@ -36,9 +39,9 @@ def run_scan(project_root):
     ] 
 
     # Capture stdout/stderr for debugging & audit
-    log_file = Path(run_dir) / "garak_stdout.log"
-    with open(log_file, "w", encoding="utf-8") as log:
-        subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
+    # log_file = Path(run_dir) / "garak_stdout.log"
+    # with open(log_file, "w", encoding="utf-8") as log:
+    #     subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
 
     #For Target B
     run_dir_B = os.path.join(project_root, "results\\Ablations", run_id, "B","raw")  
@@ -66,7 +69,7 @@ def run_scan(project_root):
 
 def normalizer(run_path,project_root): 
     run_report_path=run_path 
-    target= 'both'   
+    target= 'B'   
     out_dir=os.path.join(project_root,run_report_path) 
     path_A=os.path.join(out_dir,f"A\\normalized")
     path_B=os.path.join(out_dir,f"B\\normalized") 
@@ -108,11 +111,16 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     
-    # Load Config from configs/config.yaml
-    config_path = os.path.join(project_root, "configs", "config.yaml")
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f)  
-
+    # Load Config
+    config_path = os.path.join(project_root, "configs", "main_config.yaml") 
+    config = load_config(config_path)
+    
+    # runing garak scans
     run_path=run_scan(project_root)
+
+    # normalizing garak reports
     normalizer(run_path,project_root)
+
+
+    # comparing the normalized results
     comparator(run_path)

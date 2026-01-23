@@ -1,16 +1,23 @@
-
+from pdb import pm
 from fastapi import APIRouter, Request
 from src.core.llm import LLMClient
 from src.models.schemas import GenerateRequest, GenerateResponse
 import yaml
-from src.core.logging_config import get_logger 
+from src.core.config import get_logger 
+from dataclasses import asdict  
+
 
 logger = get_logger()   
-CONFIG_PATH = "configs/config.yaml"
+CONFIG_PATH = "configs/main_config.yaml"
 with open(CONFIG_PATH, "r") as f:
     config = yaml.safe_load(f)
 
-llm = LLMClient(model_name=config["phi3model_settings"]["name"])
+llm_config = config["llm_model_settings"]
+llm = LLMClient(
+    model_name=llm_config["name"],
+    max_new_tokens=llm_config.get("max_new_tokens"),
+    temperature=llm_config.get("temperature")
+)
 router = APIRouter()
 
 def extract_text_prompt(p) -> str:
@@ -59,33 +66,35 @@ def generate_patched(req: GenerateRequest, request: Request):
 
     pm = request.app.state.patch_manager
     
+    # DEBUG: Check if patches are loaded
+    print(f"DEBUG: prompt_patches = {[p.name for p in pm.prompt_patches]}")
+    print(f"DEBUG: output_patches = {[p.name for p in pm.output_patches]}")
+
     raw_prompt = extract_text_prompt(req.prompt)
+    
     logger.info("generate_B_called", 
                 extra={"request_id": request_id, 
                        "prompt_len": len(raw_prompt)})
 
-    patched_prompt, prompt_logs = pm.apply_prompt_with_logs(raw_prompt, request_id=request_id)
-
-    output = llm.generate(patched_prompt)  
-    safe_output, out_logs = pm.apply_output_with_logs(patched_prompt, output, request_id=request_id)
+    # patched_prompt, prompt_logs = pm.apply_prompt_with_logs(raw_prompt, request_id=request_id)
+    patched_prompt, in_logs = pm.apply_prompt_with_logs(req.prompt, request_id=request_id)
+    raw_output = llm.generate(patched_prompt)
     
-    logger.info(
-        "patch_manager_initialized",
-        extra={
-            "prompt_patches": [getattr(p, "name", p.__class__.__name__) for p in pm.prompt_patches],
-            "output_patches": [getattr(p, "name", p.__class__.__name__) for p in pm.output_patches],
-        },
+    print("DEBUG original len:", len(req.prompt)) 
+    print("DEBUG patched len:", len(patched_prompt))
+
+    safe_output, out_logs = pm.apply_output_with_logs(
+        prompt=patched_prompt,   
+        output=raw_output,
+        request_id=request_id
     )
-    # logger.info("generate_B_completed", extra={
-    #     "request_id": request_id,
-    #     "original_prompt_len": len(raw_prompt),
-    #     "patched_prompt_len": len(patched_prompt),
-    #     "original_output_len": len(output) if isinstance(output, str) else None,
-    #     "safe_output_len": len(safe_output) if isinstance(safe_output, str) else None,
-    #     "prompt_patches": [log.__dict__ for log in prompt_logs],
-    #     "output_patches": [log.__dict__ for log in out_logs],
-    # })
-    return GenerateResponse(response=safe_output, target="B")
-
-
-
+    logger.info("Safe output generated", extra={"request_id": request_id, 
+                                                "raw_prompt": raw_prompt,
+                                                  "output": (raw_output)})
+    return {
+    "response": safe_output,
+    "target": "B",               
+    "request_id": request_id,
+    "prompt_patches": [asdict(l) for l in in_logs],
+    "output_patches": [asdict(l) for l in out_logs],
+    }

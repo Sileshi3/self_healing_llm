@@ -1,5 +1,5 @@
 from typing import List, Any, Tuple
-from src.core.logging_config import get_logger
+from src.core.config import get_logger
 from dataclasses import asdict  
 from src.patches.base import PatchLog
 
@@ -26,7 +26,7 @@ class PatchManager:
             logs.append(log)
         # log patch decision
         logger.info(
-            "patches_applied_prompt",
+            "patches_applied_output",
              extra={
                 "request_id": request_id,
                 "patches": [asdict(l) if hasattr(l, "__dict__") else str(l) for l in logs],
@@ -52,21 +52,24 @@ class PatchManager:
         logs: List[PatchLog] = []
         for p in self.output_patches:
             x, log = p.apply(prompt, x)  # (new_output, patchlog)
-            logs.append(log)
+            logs.append(log) 
         logger.info(
             "patches_applied_output",
-            extra={
-                "request_id": request_id,
-                "patches": [asdict(l) if hasattr(l, "__dict__") else str(l) for l in logs],
-                "output_len": len(output) if isinstance(output, str) else None,
-                "patched_output_len": len(x) if isinstance(x, str) else None,
-            },
-        )
+                extra={
+                    "request_id": request_id,
+                    "patches": [asdict(l) for l in logs],
+                    "prompt_len": len(prompt) if isinstance(prompt, str) else None,
+                    "patched_prompt_len": len(x) if isinstance(x, str) else None,  # <-- must be x
+                    },
+                )
+
         
         return x, logs
     
     def apply_output(self, prompt: str, output: str, request_id: str | None = None) -> str:
         patched, _logs = self.apply_output_with_logs(prompt, output, request_id=request_id)
         return patched
-   
 
+# patch_manager = PatchManager(prompt_patches=[], output_patches=[])
+
+ 

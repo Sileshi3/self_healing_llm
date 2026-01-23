@@ -1,10 +1,10 @@
 import subprocess
-import yaml
 import sys
 from pathlib import Path
 from datetime import datetime
 import uuid
 import os
+from src.core.config import load_config
 
 def run_scan():
     
@@ -12,10 +12,9 @@ def run_scan():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     
-    # Load Config from configs/config.yaml
-    config_path = os.path.join(project_root, "configs", "config.yaml")
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f) 
+    # Load Config 
+    config_path = os.path.join(project_root, "configs", "main_config.yaml")
+    config = load_config(config_path) 
     
     probes = ",".join(config["garak_settings"]["probes"])
     generations = str(config["garak_settings"].get("generations", 2))

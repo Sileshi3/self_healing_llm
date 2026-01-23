@@ -5,3 +5,6 @@ pyyaml
 transformers
 torch
 accelerate
+
+protobuf
+sentencepiece

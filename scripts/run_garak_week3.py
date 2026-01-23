@@ -5,6 +5,9 @@ from pathlib import Path
 from datetime import datetime
 import uuid
 import os
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+from src.core.config import load_config
 
 def run_scan():
     
@@ -12,18 +15,16 @@ def run_scan():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     
-    # Load Config from configs/config.yaml
-    config_path = os.path.join(project_root, "configs", "config.yaml")
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f) 
+    # Load Config
+    config_path = os.path.join(project_root, "configs", "main_config.yaml")
+    config = load_config(config_path)
     
     probes = ",".join(config["garak_settings"]["probes"])
     generations = str(config["garak_settings"].get("generations", 2))
     
     #Week 3: Run Garak scans for both targets A and B
 
-    #For Target A
-    # Create unique run_id and directory structure for results Target A
+    #For Target A: create unique run_id and directory structure for results Target A
     run_id = f"{str(probes)}_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
     run_dir = os.path.join(project_root, "results", "Ablations", run_id, "A","raw")  
     os.makedirs(run_dir, exist_ok=True) 

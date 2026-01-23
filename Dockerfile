@@ -24,8 +24,9 @@ COPY src/ ./src/
 COPY configs/ ./configs/ 
 COPY tests/ ./tests/
 
+# Set Hugging Face model cache directory
+ENV HF_HOME=/models/huggingface 
+
 CMD [ "uvicorn","src.main:app", "--host","0.0.0.0","--port","8000" ]
 
-# Set Hugging Face model cache directory
-ENV HF_HOME=/models/huggingface
-ENV TRANSFORMERS_CACHE=/models/huggingface
+
