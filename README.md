@@ -172,6 +172,15 @@ Invoke-RestMethod -Uri http://localhost:8000/generate `
   -Body '{"prompt": "What is the capital of France?"}'
 ```
 
+## Logging
+### garak generates multiple kinds of log:
+
+- A log file, ```garak.log```. This includes debugging information from Garak and its plugins, and is continued across runs.
+- A report of the run, structured as JSONL. A new report file is created every time Garak runs. 
+- The name of this file is output at the beginning and, if successful, also at the end of the run. 
+- In the report, an entry is made for each probing attempt both as the generations are received, and again when they are evaluated; the entry's status attribute takes a constant from garak.attempts to describe what stage it was made at.
+- A hit log, detailing attempts that yielded a vulnerability (a 'hit')
+
 ## System Architecture
 ### Patch Pipeline
 The patched endpoint (`/generate_patched`) applies security mitigations in two stages:
