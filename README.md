@@ -1,6 +1,7 @@
 # Self-Healing LLM Security Pipeline
 
-A research prototype implementing an automated vulnerability detection and mitigation system for LLM. This project integrates [Garak](https://github.com/leondz/garak) - an LLM vulnerability scanner - with a multi-layered defense system that can detect, patch, and verify security issues in an iterative feedback loop.
+This repo implements a research prototype for an automated vulnerability detection and mitigation system for LLM. 
+This project integrates [Garak](https://github.com/leondz/garak) - an LLM vulnerability scanner - with a multi-layered defense system that can detect, patch, and verify security issues in an iterative feedback loop.
 
 ## Overview
 LLM faces security vulnerabilities, including prompt injections, jailbreaks, toxic outputs, and data leakage. This pipeline implements a **Probe → Patch → Verify** cycle:
