@@ -279,6 +279,29 @@ python scripts/week_4_data_extractor.py
 ```
 Produces `Patch_success_comparison.csv` showing before/after metrics.
 
+### Running garak_run_report_normalizer.py scripts
+Usage Examples:
+  # Normalize both targets for a specific run
+  ```python garak_run_report_normalizer.py --path results/week4_run_20260122 --target both```
+  
+  # Normalize only Target A
+  ```python garak_run_report_normalizer.py --path results/week4_run_20260122 --target A```
+  
+  # Use relative path
+  ```python garak_run_report_normalizer.py -r ../results/my_run -t B```
+        """
+### Running ablation_comparator.py scripts
+Examples:
+  # Compare a specific run (auto-finds normalized CSVs)
+  ```python ablation_comparator.py --path results/week4_run_20260122```
+  
+  # Specify custom output file
+  ```python ablation_comparator.py -r results/my_run -o custom_comparison.csv```
+  
+  # Show first 20 rows
+  ```python ablation_comparator.py -r results/my_run --head 20```
+
+
 ## Configuration Reference
 ### LLM Model Settings (`configs/config.yaml`)
 ```yaml
