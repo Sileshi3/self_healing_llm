@@ -208,46 +208,134 @@ All behavior is controlled via YAML/JSON configs, allowing experiments without c
 **Ablation Config** (`configs/patches_ablation_setting.yaml`):
 - Enable/disable individual patches for experimental conditions
 - Supports testing: baseline, prompt-only, output-only, full system
-## Running Experiments
-### Baseline Vulnerability Scan (Condition 0)
-Scan Target A (unpatched) to establish baseline vulnerabilities:
+## Complete Experimental Workflow Guide
+
+This section provides comprehensive instructions for reproducing all experimental conditions, running evaluations, and generating summary tables used in the research report.
+
+### Prerequisites Checklist
+
+Before running experiments, ensure:
+
+**1. Environment Setup**:
+```powershell
+# Create and activate Garak environment (Windows PowerShell)
+python -m venv garak_env
+.\garak_env\Scripts\Activate.ps1
+
+# Install Garak
+pip install garak
+
+# Install project dependencies (in main environment)
+pip install -r requirements.txt
+```
+
+**Linux/macOS**:
+```bash
+python -m venv garak_env
+source garak_env/bin/activate
+pip install garak
+```
+
+**2. Docker Setup** (for production deployment):
+```powershell
+# Build the Docker image
+docker build -t self-healing-llm .
+
+# Run with GPU support (if available)
+docker run --rm -p 8000:8000 --gpus all `
+  -e HF_HOME=/models/huggingface `
+  -e HUGGINGFACE_HUB_TOKEN=<your_token> `
+  -v C:\path\to\llm_cache:/models/huggingface `
+  self-healing-llm
+```
+
+**Linux/macOS Docker**:
+```bash
+docker run --rm -p 8000:8000 --gpus all \
+  -e HF_HOME=/models/huggingface \
+  -e HUGGINGFACE_HUB_TOKEN=<your_token> \
+  -v /path/to/llm_cache:/models/huggingface \
+  self-healing-llm
+```
+
+**3. Start the API Server**:
+
+**Option A: Local (Development)**:
+```powershell
+# Windows PowerShell
+uvicorn src.main:app --reload
+```
 
 ```bash
+# Linux/macOS
+uvicorn src.main:app --reload
+```
+
+**Option B: Docker (Production)**:
+- The Docker container automatically starts the API on port 8000
+- Verify: http://localhost:8000/docs
+
+**4. Configure Garak Probes**:
+
+Edit [configs/main_config.yaml](configs/main_config.yaml):
+```yaml
+garak_settings:
+  probes:
+    - promptinject        # Prompt injection attacks
+    - dan                 # Jailbreak attempts
+    - lmrc                # Another attack category
+  generations: 2          # Attempts per probe
+```
+
+---
+
+### Running Ablation Studies (Conditions 0-4)
+
+The system supports 5 experimental conditions to measure the effectiveness of individual patches and the full system.
+
+#### **Condition 0: Baseline (No Patches)**
+
+**Purpose**: Establish baseline vulnerability levels without any security patches.
+
+**Configuration**: All patches disabled in [configs/week4/patches_ablation_setting.yaml](configs/week4/patches_ablation_setting.yaml):
+```yaml
+ablation_setting: 
+  policy_prompt:
+    enabled: false
+  input_sanitize:
+    enabled: false
+  output_enforce:
+    enabled: false
+```
+
+**Run the scan**:
+```powershell
 # Activate Garak environment
-source garak_env/bin/activate  # Windows: .\garak_env\Scripts\Activate
+.\garak_env\Scripts\Activate.ps1
 
-# Edit configs/config.yaml to set desired probes:
-# garak_settings:
-#   probes:
-#     - promptinject
-#     - dan
-#     - web_injection
-
-# Run Garak against Target A
+# Run vulnerability scan
 python scripts/run_garak_week4.py
 ```
-**Results** saved to: `results/Ablations/<run_id>/A/`
 
-### Patched System Scan (Condition 4 - Full System)
-Enable all patches in `configs/patches_ablation_setting.yaml`:
-
-```yaml
-ablation_setting: 
-  policy_prompt:
-    enabled: true
-  input_sanitize:
-    enabled: true
-  output_enforce:
-    enabled: true
-```
-Run the same Garak probes against Target B:
+**Linux/macOS**:
 ```bash
+source garak_env/bin/activate
 python scripts/run_garak_week4.py
 ```
-**Results** saved to: `results/Ablations/<run_id>/B/`
-### Ablation Study (Individual Patches)
-Test each patch in isolation by enabling only one at a time:
-**Condition 1 (Policy Prompt Only)**:
+
+**Output**: Results saved to `results/Ablations/<run_id>/`
+- `A/raw/garak.report.jsonl` - Raw Garak output for Target A
+- `A/normalized/normalized_summary.csv` - Processed metrics
+- `B/` - Similar structure for Target B (patched)
+- `Patch_success_comparison.csv` - Side-by-side comparison
+
+---
+
+#### **Condition 1: Policy Prompt Only**
+
+**Purpose**: Test effectiveness of system policy injection alone.
+
+**Configuration**: Edit [configs/week4/patches_ablation_setting.yaml](configs/week4/patches_ablation_setting.yaml):
 ```yaml
 ablation_setting: 
   policy_prompt:
@@ -257,49 +345,339 @@ ablation_setting:
   output_enforce:
     enabled: false
 ```
-Repeat for Conditions 2 (input_sanitize only) and 3 (output_enforce only).
 
-### Benign Regression Suite (Week 5)
-Measure impact on legitimate use cases:
-
+**Run**:
 ```bash
+python scripts/run_garak_week4.py
+```
+
+---
+
+#### **Condition 2: Input Sanitization Only**
+
+**Purpose**: Measure impact of prompt-level input cleaning.
+
+**Configuration**:
+```yaml
+ablation_setting: 
+  policy_prompt:
+    enabled: false
+  input_sanitize:
+    enabled: true
+  output_enforce:
+    enabled: false
+```
+
+**Run**:
+```bash
+python scripts/run_garak_week4.py
+```
+
+---
+
+#### **Condition 3: Output Enforcement Only**
+
+**Purpose**: Test post-generation filtering effectiveness.
+
+**Configuration**:
+```yaml
+ablation_setting: 
+  policy_prompt:
+    enabled: false
+  input_sanitize:
+    enabled: false
+  output_enforce:
+    enabled: true
+```
+
+**Run**:
+```bash
+python scripts/run_garak_week4.py
+```
+
+---
+
+#### **Condition 4: Full System (All Patches)**
+
+**Purpose**: Measure combined effectiveness of all security layers.
+
+**Configuration**:
+```yaml
+ablation_setting: 
+  policy_prompt:
+    enabled: true
+  input_sanitize:
+    enabled: true
+  output_enforce:
+    enabled: true
+```
+
+**Run**:
+```bash
+python scripts/run_garak_week4.py
+```
+
+**Note**: Each run automatically:
+1. Scans **Target A** (baseline) and **Target B** (patched)
+2. Generates normalized summaries
+3. Creates comparison tables
+4. Saves results with unique run IDs
+
+---
+
+### Running the Benign Regression Suite
+
+**Purpose**: Measure the impact of security patches on legitimate (benign) use cases. This ensures patches don't cause excessive false positives or degrade utility.
+
+**Test Suite**: 29 benign prompts across categories:
+- Factual questions
+- Creative writing requests
+- Educational queries
+- Professional assistance
+- Conversational prompts
+
+**Run the evaluation**:
+```powershell
+# Windows PowerShell
+.\garak_env\Scripts\Activate.ps1
 python scripts/run_benign_suit_week5.py
 ```
 
-This runs 29 benign prompts against both targets and produces:
-- `benign_overall_rates.csv` - Pass rates, refusal rates, average response length
-- `benign_by_category_rates.csv` - Breakdown by prompt category
-- Raw JSONL logs for detailed analysis
+```bash
+# Linux/macOS
+source garak_env/bin/activate
+python scripts/run_benign_suit_week5.py
+```
 
-### Extracting Results
-Generate comparison summaries:
+**Outputs** (saved to `results/benign_suite/<model>_week5_<timestamp>/`):
+
+1. **`benign_overall_rates.csv`** - Aggregate metrics:
+   ```csv
+   condition,total,pass_rate,refusal_rate,avg_len
+   A,29,0.6897,0.0000,245.3
+   B,29,0.5862,0.1379,223.1
+   ```
+   - `pass_rate`: % of prompts that fully meet quality criteria
+   - `refusal_rate`: % of benign prompts incorrectly blocked
+   - `avg_len`: Average response length (characters)
+
+2. **`benign_by_category_rates.csv`** - Per-category breakdown:
+   ```csv
+   condition,category,total,pass_rate,refusal_rate
+   A,factual,10,0.90,0.00
+   B,factual,10,0.80,0.10
+   A,creative,8,0.75,0.00
+   B,creative,8,0.62,0.12
+   ```
+
+3. **`benign_a.jsonl` / `benign_b.jsonl`** - Raw response logs:
+   ```json
+   {"prompt_id": "factual_01", "prompt": "What is...", "response": "...", "pass": true, "is_refusal": false}
+   ```
+
+**Interpretation**:
+- **High pass_rate (A and B)**: System preserves utility
+- **Low refusal_rate (B)**: Patches don't over-block
+- **Pass_rate drop (A→B)**: Security/utility trade-off measurement
+
+---
+
+### Regenerating Summary Tables for Report
+
+After running experiments, use these scripts to generate analysis tables:
+
+#### **1. Normalize Raw Garak Reports**
+
+Converts raw JSONL logs into structured CSV summaries.
+
+**Script**: [scripts/garak_run_report_normalizer.py](scripts/garak_run_report_normalizer.py)
+
+**Usage**:
+```powershell
+# Normalize both Target A and B for a specific run
+python scripts/garak_run_report_normalizer.py --path results/Ablations/<run_id> --target both
+
+# Normalize only Target A
+python scripts/garak_run_report_normalizer.py --path results/Ablations/<run_id> --target A
+
+# Normalize only Target B
+python scripts/garak_run_report_normalizer.py --path results/Ablations/<run_id> --target B
+```
+
+**Example**:
+```powershell
+python scripts/garak_run_report_normalizer.py `
+  --path results/Ablations/dan_run_20260109_224620_7455ef `
+  --target both
+```
+
+**Output**: Creates `normalized_summary.csv` in `A/normalized/` and/or `B/normalized/`
+
+**Columns**:
+- `probe_id`: Garak probe identifier
+- `category`: Attack category
+- `outcome`: `PASS` (attack succeeded) or `FAIL` (blocked)
+- `count`: Number of attempts with this outcome
+
+---
+
+#### **2. Compare Target A vs. Target B**
+
+Generates side-by-side comparison showing patch effectiveness.
+
+**Script**: [scripts/ablation_comparator.py](scripts/ablation_comparator.py)
+
+**Usage**:
+```powershell
+# Compare a specific run (auto-finds normalized CSVs)
+python scripts/ablation_comparator.py --path results/Ablations/<run_id>
+
+# Specify custom output file
+python scripts/ablation_comparator.py -r results/Ablations/<run_id> -o custom_name.csv
+
+# Preview first 20 rows in terminal
+python scripts/ablation_comparator.py -r results/Ablations/<run_id> --head 20
+```
+
+**Example**:
+```powershell
+python scripts/ablation_comparator.py `
+  --path results/Ablations/promptinject_run_20260109_182643_a2f15a
+```
+
+**Output**: `Patch_success_comparison.csv` in the run directory
+
+**Columns**:
+- `probe_id`, `category`: Attack identifiers
+- `A_PASS`, `A_FAIL`: Target A outcomes
+- `B_PASS`, `B_FAIL`: Target B outcomes  
+- `A_pass_rate (%)`: Attack success rate without patches
+- `B_pass_rate (%)`: Attack success rate with patches
+- `Improvement (%)`: Percentage point reduction in attack success
+
+**Interpretation**:
+- **Positive improvement**: Patches reduced attack success (good)
+- **Negative improvement**: Patches increased attack success (bad - rare)
+- **0% improvement**: No change
+
+---
+
+#### **3. Generate Master Summary Across All Conditions**
+
+For multi-condition experiments, aggregate results:
+
+**Manual aggregation**:
+```powershell
+# Collect all Patch_success_comparison.csv files
+$files = Get-ChildItem -Path results/Ablations/*/Patch_success_comparison.csv -Recurse
+
+# Load and combine using pandas (Python)
+python -c "
+import pandas as pd
+dfs = [pd.read_csv(f) for f in ['results/Ablations/C0_*/Patch_success_comparison.csv', 'results/Ablations/C1_*/Patch_success_comparison.csv', ...]]
+combined = pd.concat(dfs, keys=['C0', 'C1', 'C2', 'C3', 'C4'])
+combined.to_csv('results/master_ablation_summary.csv')
+"
+```
+
+---
+
+### Quick Reference: Common Workflows
+
+#### **Full Ablation Study (All 5 Conditions)**
 
 ```bash
-python scripts/week_4_data_extractor.py
-```
-Produces `Patch_success_comparison.csv` showing before/after metrics.
+# For each condition (0-4):
+# 1. Edit configs/week4/patches_ablation_setting.yaml
+# 2. Run scan
+python scripts/run_garak_week4.py  # Auto-normalizes and compares
 
-### Running garak_run_report_normalizer.py scripts
-Usage Examples:
-  # Normalize both targets for a specific run
-  ```python garak_run_report_normalizer.py --path results/week4_run_20260122 --target both```
+# 3. Run benign suite after each condition
+python scripts/run_benign_suit_week5.py
+```
+
+#### **Single Probe Quick Test**
+
+```bash
+# 1. Edit configs/main_config.yaml:
+#    probes: [promptinject]
+#    generations: 2
+
+# 2. Run scan
+python scripts/run_garak_week4.py
+
+# 3. View results
+cat results/Ablations/<latest_run>/Patch_success_comparison.csv
+```
+
+#### **Reproduce Report Tables**
+
+```bash
+# Navigate to an existing run
+cd results/Ablations/promptinject_run_20260109_182643_a2f15a
+
+# Regenerate normalized summaries (if missing)
+python ../../scripts/garak_run_report_normalizer.py --path . --target both
+
+# Regenerate comparison table
+python ../../scripts/ablation_comparator.py --path .
+```
+
+---
+
+### Troubleshooting Experiment Runs
+
+**Issue: "Connection refused" when running Garak**
+- **Cause**: API server not running or wrong endpoint
+- **Fix**: 
+  ```bash
+  # Check if server is up
+  curl http://localhost:8000/docs  # Linux/macOS
+  Invoke-WebRequest http://localhost:8000/docs  # Windows
   
-  # Normalize only Target A
-  ```python garak_run_report_normalizer.py --path results/week4_run_20260122 --target A```
+  # Restart server
+  uvicorn src.main:app --reload
+  ```
+
+**Issue: "404 Not Found" in Garak results**
+- **Cause**: Endpoint path mismatch in target configs
+- **Fix**: Verify [configs/target_A_rest_config.json](configs/target_A_rest_config.json) and [configs/target_B_rest_config.json](configs/target_B_rest_config.json) have correct URIs:
+  - Target A: `http://127.0.0.1:8000/generate`
+  - Target B: `http://127.0.0.1:8000/generate_patched`
+
+**Issue: "Module not found" errors**
+- **Cause**: Wrong environment activated
+- **Fix**: 
+  ```bash
+  # For Garak scripts
+  source garak_env/bin/activate  # Linux/macOS
+  .\garak_env\Scripts\Activate.ps1  # Windows
   
-  # Use relative path
-  ```python garak_run_report_normalizer.py -r ../results/my_run -t B```
-        """
-### Running ablation_comparator.py scripts
-Examples:
-  # Compare a specific run (auto-finds normalized CSVs)
-  ```python ablation_comparator.py --path results/week4_run_20260122```
-  
-  # Specify custom output file
-  ```python ablation_comparator.py -r results/my_run -o custom_comparison.csv```
-  
-  # Show first 20 rows
-  ```python ablation_comparator.py -r results/my_run --head 20```
+  # For API server
+  deactivate  # Exit Garak env
+  pip install -r requirements.txt
+  ```
+
+**Issue: Results not auto-normalizing**
+- **Cause**: `run_garak_week4.py` may fail silently on normalization step
+- **Fix**: Manually run normalizer:
+  ```bash
+  python scripts/garak_run_report_normalizer.py \
+    --path results/Ablations/<run_id> --target both
+  ```
+
+---
+
+### Expected Runtime
+
+**Per ablation study run** (typical configuration):
+- **Garak scan** (both targets): 15-45 minutes
+  - Depends on: # of probes, generations, model speed
+  - Example: 3 probes × 2 generations × 2 targets = ~30 min on CPU
+- **Benign suite**: 5-10 minutes (29 prompts × 2 targets)
+- **Normalization + comparison**: < 1 minute
+
+**Full 5-condition study**: ~2-4 hours (automated with loop)
 
 
 ## Configuration Reference
