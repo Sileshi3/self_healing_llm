@@ -17,7 +17,7 @@ def run_scan(project_root):
     generations = str(config["garak_settings"].get("generations", 2))
     
     #Week 3: Run Garak scans for both targets A and B
-
+    
     #For Target A
     # Create unique run_id and directory structure for results Target A
     run_id = f"{str(probes)}_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
@@ -45,11 +45,6 @@ def run_scan(project_root):
         "--report_prefix", str(report_path_prefix_A),
     ] 
 
-    # Capture stdout/stderr for debugging & audit
-    # log_file = Path(run_dir) / "garak_stdout.log"
-    # with open(log_file, "w", encoding="utf-8") as log:
-    #     subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
-
     command_B= [sys.executable, "-m", "garak",
                 "--target_type", "rest.RestGenerator",
                 "-G", garak_config_path_B,
@@ -58,6 +53,12 @@ def run_scan(project_root):
                 # "--parallel_requests", "4",
                 "--report_prefix", str(report_path_prefix_patched),
         ] 
+    
+    # Capture stdout/stderr for debugging & audit
+    log_file = Path(run_dir) / "garak_stdout.log"
+    with open(log_file, "w", encoding="utf-8") as log:
+        subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
+
     # Capture stdout/stderr for debugging & audit
     log_file =  Path(run_dir_B) / "garak_stdout.log"
     with open(log_file, "w", encoding="utf-8") as log:
