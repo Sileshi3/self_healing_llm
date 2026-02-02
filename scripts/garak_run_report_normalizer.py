@@ -1,14 +1,8 @@
 import json
 import csv
+import argparse
 from pathlib import Path
-import yaml
-import os
 
-
-# Setup Paths
-script_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(script_dir)
-config_path = os.path.join(project_root, "configs", "main_config.yaml") 
 
 def summarize_jsonl(input_file, output_csv, target_label):
     summary_data = []
@@ -17,19 +11,13 @@ def summarize_jsonl(input_file, output_csv, target_label):
         for line in f:
             entry = json.loads(line)
             
-            # Only process 'attempt' entries (skip 'start_run', 'init', etc.)
             if entry.get("entry_type") == "attempt":
-                # Check for a HIT: Is there any detector result > 0?
                 detectors = entry.get("detector_results", {}) 
-                is_hit = False
-                for score in detectors.values():
-                    if isinstance(score, list):
-                        if any(s > 0 for s in score):
-                            is_hit = True
-                            break
-                    elif score > 0:
-                        is_hit = True
-                        break
+                is_hit = any(
+                    (s > 0 if isinstance(s, (int, float)) else any(x > 0 for x in s))
+                    for s in detectors.values()
+                )
+                
                 summary_data.append({
                     "run_id": entry.get("uuid"),
                     "target": target_label,
@@ -38,44 +26,64 @@ def summarize_jsonl(input_file, output_csv, target_label):
                     "category": entry.get("probe_classname").split('.')[0]
                 })
 
-    # Write to CSV
-    keys = summary_data[0].keys()
+    if not summary_data:
+        print(f"Warning: No attempt entries found in {input_file}")
+        return
+
     with open(output_csv, 'w', newline='', encoding='utf-8') as output_file:
-        dict_writer = csv.DictWriter(output_file, fieldnames=keys)
+        dict_writer = csv.DictWriter(output_file, fieldnames=summary_data[0].keys())
         dict_writer.writeheader()
         dict_writer.writerows(summary_data)
     
-    print(f"Normalized summary saved on: {output_csv}")
-    
-# if __name__=="__main__": 
-#     with open(config_path, "r") as f:
-#         config = yaml.safe_load(f) 
-#     run_report_path=config["normalize_setting"]["run_report_path"]
-#     target=config["normalize_setting"]["target"]
+    print(f" Normalized summary saved: {output_csv}")
 
-#     run_id = Path(run_report_path).name  
-#     out_dir=os.path.join(project_root,run_report_path) 
-#     path_A=os.path.join(out_dir,f"A\\normalized")
-#     path_B=os.path.join(out_dir,f"B\\normalized") 
-#     os.makedirs(path_A, exist_ok=True)
-#     os.makedirs(path_B, exist_ok=True)
-     
-#     if target=="A": 
-#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak.report.jsonl"), 
-#                     os.path.join(path_A, "normalized_summary.csv"), 
-#                     f"Target {target}")
-#     if target=="B": 
-#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/{target}/raw/garak_patched.report.jsonl"), 
-#                     os.path.join(path_B, "normalized_summary.csv"), 
-#                     f"Target {target}")
-#     if target=='both':
-#         summarize_jsonl(os.path.join(project_root, f'{out_dir}/A/raw/garak.report.jsonl'), 
-#                     os.path.join(path_A,'normalized_summary.csv'), 
-#                     "Target A") 
-#         summarize_jsonl(os.path.join(project_root, f"{out_dir}/B/raw/garak_patched.report.jsonl"), 
-#                     os.path.join(path_B, "normalized_summary.csv"), 
-#                     "Target B")
-#     if target not in ["A","B","both"]:
-#         raise ValueError("Target must be either A or B")
+
+def main():
+    parser = argparse.ArgumentParser(description="Normalize Garak JSONL reports into CSV summaries",
+                                     formatter_class=argparse.RawDescriptionHelpFormatter ) 
+    parser.add_argument('-r', '--path',
+                        required=True,
+                        help='Path to the garak log directory'
+                        )
     
-   
+    parser.add_argument('-t', '--target',
+                        choices=['A', 'B', 'both'],
+                        default='both',
+                        help='Which target(s) log to normalize (default: both)'
+    )
+    
+    args = parser.parse_args()
+    
+    # Resolve paths
+    run_dir = Path(args.path).resolve()
+    if not run_dir.exists():
+        print(f"Error: Run directory not found: {run_dir}")
+        return 1
+    
+    # Process targets
+    targets_to_process = ['A', 'B'] if args.target == 'both' else [args.target]
+    
+    for target in targets_to_process:
+        raw_file = run_dir / target / "raw" / (
+            "garak.report.jsonl" if target == "A" else "garak_patched.report.jsonl")
+        
+        if not raw_file.exists():
+            print(f"Warning: {raw_file} not found, skipping Target {target}")
+            continue
+        
+        # Create output directory
+        norm_dir = run_dir / target / "normalized"
+        norm_dir.mkdir(parents=True, exist_ok=True)
+        
+        output_csv = norm_dir / "normalized_summary.csv"
+        
+        print(f"\nProcessing Target {target}...")
+        summarize_jsonl(raw_file, output_csv, f"Target {target}")
+    
+    print("\n Normalization complete!")
+    return 0
+
+
+if __name__ == "__main__":
+    exit(main())
+

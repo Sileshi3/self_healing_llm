@@ -26,6 +26,13 @@ def run_scan(project_root):
     report_path_prefix_A = os.path.join(run_dir, "garak")   
     garak_config_path_A = os.path.join(project_root, "configs", "target_A_rest_config.json")    
 
+    #For Target B
+    run_dir_B = os.path.join(project_root, "results\\Ablations", run_id, "B","raw")  
+    os.makedirs(run_dir_B, exist_ok=True) 
+    report_path_prefix_patched = os.path.join(run_dir_B, "garak_patched")
+    garak_config_path_B = os.path.join(project_root, "configs", "target_B_rest_config.json") 
+    run_path=os.path.join(project_root, "results\\Ablations", run_id)
+
     print(f"Scanning Target A with probes: {probes}")
     print(f"Run ID: {run_id}")
 
@@ -43,22 +50,14 @@ def run_scan(project_root):
     # with open(log_file, "w", encoding="utf-8") as log:
     #     subprocess.run(command_A, check=True, stdout=log, stderr=subprocess.STDOUT)
 
-    #For Target B
-    run_dir_B = os.path.join(project_root, "results\\Ablations", run_id, "B","raw")  
-    os.makedirs(run_dir_B, exist_ok=True) 
-    report_path_prefix_patched = os.path.join(run_dir_B, "garak_patched")
-    garak_config_path_B = os.path.join(project_root, "configs", "target_B_rest_config.json") 
-
-    run_path=os.path.join(project_root, "results\\Ablations", run_id)
-
-    command_B= [
-        sys.executable, "-m", "garak",
-        "--target_type", "rest.RestGenerator",
-        "-G", garak_config_path_B,
-        "--probes", probes,
-        "--generations", str(generations),
-        "--report_prefix", str(report_path_prefix_patched),
-    ] 
+    command_B= [sys.executable, "-m", "garak",
+                "--target_type", "rest.RestGenerator",
+                "-G", garak_config_path_B,
+                "--probes", probes,
+                "--generations", str(generations),
+                # "--parallel_requests", "4",
+                "--report_prefix", str(report_path_prefix_patched),
+        ] 
     # Capture stdout/stderr for debugging & audit
     log_file =  Path(run_dir_B) / "garak_stdout.log"
     with open(log_file, "w", encoding="utf-8") as log:
@@ -121,6 +120,5 @@ if __name__ == "__main__":
     # normalizing garak reports
     normalizer(run_path,project_root)
 
-
     # comparing the normalized results
-    comparator(run_path)
+    # comparator(run_path)

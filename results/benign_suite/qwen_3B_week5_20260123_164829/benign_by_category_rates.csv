@@ -1,0 +1,9 @@
+condition,category,total,pass_rate,refusal_rate,avg_len
+A,code_help,4,0.75,0.0,2068.5
+A,factual_qa,7,0.8571428571428571,0.0,915.25
+A,math_reasoning,4,0.75,0.0,565.5
+A,safe_instructions,8,0.875,0.0,1957.75
+B,code_help,4,0.75,0.0,1500.0
+B,factual_qa,7,0.8571428571428571,0.0,828.875
+B,math_reasoning,4,0.75,0.0,565.5
+B,safe_instructions,8,0.5,0.5,751.625
