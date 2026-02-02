@@ -92,13 +92,6 @@ This work was completed as part of a 6-week research internship focusing on auto
    - Edit `configs/patches_ablation_setting.yaml` to enable/disable specific patches for ablation experiments
 
 ### Running Locally (Development)
-```bash
-# Start the FastAPI server
-uvicorn src.main:app --reload
-
-# Or if uvicorn is not in PATH:
-python -m uvicorn src.main:app --reload
-```
 Access the API at `http://localhost:8000/docs`
 
 ### Running with Docker (Production)
@@ -214,7 +207,6 @@ All behavior is controlled via YAML/JSON configs, allowing experiments without c
 This section provides comprehensive instructions for reproducing all experimental conditions, running evaluations, and generating summary tables used in the research report.
 
 ### Prerequisites Checklist
-
 Before running experiments, ensure:
 
 **1. Environment Setup**:
@@ -277,7 +269,6 @@ uvicorn src.main:app --reload
 - Verify: http://localhost:8000/docs
 
 **4. Configure Garak Probes**:
-
 Edit [configs/main_config.yaml](configs/main_config.yaml):
 ```yaml
 garak_settings:
@@ -285,13 +276,11 @@ garak_settings:
     - promptinject        # Prompt injection attacks
     - dan                 # Jailbreak attempts
     - lmrc                # Another attack category
-  generations: 2          # Attempts per probe
+  generations: 1          # Attempts per probe
 ```
 
 ---
-
 ### Running Ablation Studies (Conditions 0-4)
-
 The system supports 5 experimental conditions to measure the effectiveness of individual patches and the full system.
 
 #### **Condition 0: Baseline (No Patches)**
@@ -310,11 +299,7 @@ ablation_setting:
 ```
 
 **Run the scan**:
-```powershell
-# Activate Garak environment
-.\garak_env\Scripts\Activate.ps1
-
-# Run vulnerability scan
+```
 python scripts/run_garak_week4.py
 ```
 
@@ -331,11 +316,8 @@ python scripts/run_garak_week4.py
 - `Patch_success_comparison.csv` - Side-by-side comparison
 
 ---
-
 #### **Condition 1: Policy Prompt Only**
-
-**Purpose**: Test effectiveness of system policy injection alone.
-
+**Purpose**: Test the effectiveness of system policy injection alone.
 **Configuration**: Edit [configs/week4/patches_ablation_setting.yaml](configs/week4/patches_ablation_setting.yaml):
 ```yaml
 ablation_setting: 
@@ -355,9 +337,7 @@ python scripts/run_garak_week4.py
 ---
 
 #### **Condition 2: Input Sanitization Only**
-
-**Purpose**: Measure impact of prompt-level input cleaning.
-
+**Purpose**: Measure the impact of prompt-level input cleaning.
 **Configuration**:
 ```yaml
 ablation_setting: 
@@ -368,18 +348,14 @@ ablation_setting:
   output_enforce:
     enabled: false
 ```
-
 **Run**:
 ```bash
 python scripts/run_garak_week4.py
 ```
-
 ---
 
 #### **Condition 3: Output Enforcement Only**
-
 **Purpose**: Test post-generation filtering effectiveness.
-
 **Configuration**:
 ```yaml
 ablation_setting: 
@@ -390,17 +366,15 @@ ablation_setting:
   output_enforce:
     enabled: true
 ```
-
 **Run**:
 ```bash
 python scripts/run_garak_week4.py
 ```
-
 ---
 
 #### **Condition 4: Full System (All Patches)**
 
-**Purpose**: Measure combined effectiveness of all security layers.
+**Purpose**: Measure the combined effectiveness of all security layers.
 
 **Configuration**:
 ```yaml
@@ -417,7 +391,6 @@ ablation_setting:
 ```bash
 python scripts/run_garak_week4.py
 ```
-
 **Note**: Each run automatically:
 1. Scans **Target A** (baseline) and **Target B** (patched)
 2. Generates normalized summaries
@@ -427,23 +400,15 @@ python scripts/run_garak_week4.py
 ---
 
 ### Running the Benign Regression Suite
-
-**Purpose**: Measure the impact of security patches on legitimate (benign) use cases. This ensures patches don't cause excessive false positives or degrade utility.
-
-**Test Suite**: 29 benign prompts across categories:
+**Purpose**: Measure the impact of security patches on legitimate (benign) use cases. 
+This ensures patches don't cause excessive false positives or degrade utility.
+**Test Suite**: 24 benign prompts across categories:
 - Factual questions
-- Creative writing requests
-- Educational queries
-- Professional assistance
-- Conversational prompts
-
+- Coding requests
+- Instructions
+- Writing
+- Math
 **Run the evaluation**:
-```powershell
-# Windows PowerShell
-.\garak_env\Scripts\Activate.ps1
-python scripts/run_benign_suit_week5.py
-```
-
 ```bash
 # Linux/macOS
 source garak_env/bin/activate
@@ -484,15 +449,12 @@ python scripts/run_benign_suit_week5.py
 ---
 
 ### Regenerating Summary Tables for Report
-
 After running experiments, use these scripts to generate analysis tables:
 
 #### **1. Normalize Raw Garak Reports**
-
 Converts raw JSONL logs into structured CSV summaries.
 
 **Script**: [scripts/garak_run_report_normalizer.py](scripts/garak_run_report_normalizer.py)
-
 **Usage**:
 ```powershell
 # Normalize both Target A and B for a specific run
@@ -513,7 +475,6 @@ python scripts/garak_run_report_normalizer.py `
 ```
 
 **Output**: Creates `normalized_summary.csv` in `A/normalized/` and/or `B/normalized/`
-
 **Columns**:
 - `probe_id`: Garak probe identifier
 - `category`: Attack category
@@ -524,7 +485,7 @@ python scripts/garak_run_report_normalizer.py `
 
 #### **2. Compare Target A vs. Target B**
 
-Generates side-by-side comparison showing patch effectiveness.
+Generates a side-by-side comparison showing patch effectiveness.
 
 **Script**: [scripts/ablation_comparator.py](scripts/ablation_comparator.py)
 
@@ -547,7 +508,6 @@ python scripts/ablation_comparator.py `
 ```
 
 **Output**: `Patch_success_comparison.csv` in the run directory
-
 **Columns**:
 - `probe_id`, `category`: Attack identifiers
 - `A_PASS`, `A_FAIL`: Target A outcomes
@@ -564,9 +524,7 @@ python scripts/ablation_comparator.py `
 ---
 
 #### **3. Generate Master Summary Across All Conditions**
-
 For multi-condition experiments, aggregate results:
-
 **Manual aggregation**:
 ```powershell
 # Collect all Patch_success_comparison.csv files
@@ -584,7 +542,6 @@ combined.to_csv('results/master_ablation_summary.csv')
 ---
 
 ### Quick Reference: Common Workflows
-
 #### **Full Ablation Study (All 5 Conditions)**
 
 ```bash
@@ -592,42 +549,31 @@ combined.to_csv('results/master_ablation_summary.csv')
 # 1. Edit configs/week4/patches_ablation_setting.yaml
 # 2. Run scan
 python scripts/run_garak_week4.py  # Auto-normalizes and compares
-
-# 3. Run benign suite after each condition
-python scripts/run_benign_suit_week5.py
 ```
 
-#### **Single Probe Quick Test**
-
+#### **Single Probe Test**
 ```bash
 # 1. Edit configs/main_config.yaml:
 #    probes: [promptinject]
 #    generations: 2
-
 # 2. Run scan
 python scripts/run_garak_week4.py
-
 # 3. View results
 cat results/Ablations/<latest_run>/Patch_success_comparison.csv
 ```
 
 #### **Reproduce Report Tables**
-
 ```bash
 # Navigate to an existing run
 cd results/Ablations/promptinject_run_20260109_182643_a2f15a
-
 # Regenerate normalized summaries (if missing)
 python ../../scripts/garak_run_report_normalizer.py --path . --target both
-
-# Regenerate comparison table
+# Regenerate comparison table (if missing)
 python ../../scripts/ablation_comparator.py --path .
 ```
 
 ---
-
 ### Troubleshooting Experiment Runs
-
 **Issue: "Connection refused" when running Garak**
 - **Cause**: API server not running or wrong endpoint
 - **Fix**: 
@@ -658,28 +604,22 @@ python ../../scripts/ablation_comparator.py --path .
   deactivate  # Exit Garak env
   pip install -r requirements.txt
   ```
-
 **Issue: Results not auto-normalizing**
-- **Cause**: `run_garak_week4.py` may fail silently on normalization step
+- **Cause**: `run_garak_week4.py` may fail silently on the normalization step
 - **Fix**: Manually run normalizer:
   ```bash
   python scripts/garak_run_report_normalizer.py \
     --path results/Ablations/<run_id> --target both
   ```
-
 ---
 
 ### Expected Runtime
-
 **Per ablation study run** (typical configuration):
 - **Garak scan** (both targets): 15-45 minutes
   - Depends on: # of probes, generations, model speed
   - Example: 3 probes × 2 generations × 2 targets = ~30 min on CPU
 - **Benign suite**: 5-10 minutes (29 prompts × 2 targets)
 - **Normalization + comparison**: < 1 minute
-
-**Full 5-condition study**: ~2-4 hours (automated with loop)
-
 
 ## Configuration Reference
 ### LLM Model Settings (`configs/config.yaml`)
@@ -749,13 +689,10 @@ Run all tests:
 ```bash
 pytest tests/ -v
 ```
-
 Run tests in Docker (same environment as production):
-
 ```bash
 docker run --rm self-healing-llm pytest -q
 ```
-
 Test coverage includes:
 - Config loading (`test_config_loading.py`)
 - API schema validation (`test_api_schema.py`)
@@ -763,7 +700,6 @@ Test coverage includes:
 
 ## Results and Evaluation
 ### Output Structure
-
 ```
 results/
 ├── Ablations/<run_id>/
