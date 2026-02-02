@@ -43,49 +43,49 @@ This work was completed as part of a 6-week research internship focusing on auto
 │       └── patches_ablation_setting.yaml        # Configuration for patch ablation experimental conditions 
 │   └── week5/
 │       └── benign_prompts.yaml        # Benign regression suite
-│   ├── main_config.yaml            # Main LLM and system settings
-│   ├── patches_config.yaml    # Patch behavior configuration 
+│   ├── main_config.yaml               # Main LLM and system settings
+│   ├── patches_config.yaml            # Patch behavior configuration 
 │   ├── target_A_rest_config.json      # Garak config for baseline
 │   ├── target_B_rest_config.json      # Garak config for patch
-├── llm_cache/              # placeholder for local llm catching
-├── results/                # placeholder for result logs for experiment outputs (Garak logs, summaries)
+├── llm_cache/                         # placeholder for local llm catching
+├── results/                           # placeholder for result logs for experiment outputs (Garak logs, summaries)
 ├── scripts/
-│   ├── ablation_comparator.py     # for comparison of ablation runs
-│   ├── garak_run_report_normalizer.py     # to normalize Garak output logs
-│   ├── mistral_downloader.py     # to download mistral model locally
-│   ├── run_baseline.py     # to run baseline in week 2 activities
+│   ├── ablation_comparator.py            # for comparison of ablation runs
+│   ├── garak_run_report_normalizer.py    # to normalize Garak output logs
+│   ├── mistral_downloader.py             # to download mistral model locally
+│   ├── run_baseline.py                   # to run baseline in week 2 activities
 │   ├── run_benign_suit.py     # to run benign suit tests in patched target
 │   ├── run_garak_week3.py     # Run Garak for patch implimentations
 │   ├── run_garak_week4.py     # Run Garak for patch implimentations and ablations
 │   └── run_test_adversarial_week5.py   # to test the patched system in adversarial samples
 ├── src/
-│   ├── main.py                # FastAPI application entry point
+│   ├── main.py               # FastAPI application entry point
 │   ├── api/
-│   │   └── generate.py        # Target A and B endpoints
+│   │   └── generate.py       # Target A and B endpoints
 │   ├── core/
-│   │   ├── llm.py            # LLM client wrapper
+│   │   ├── llm.py                     # LLM client wrapper
 │   │   ├── benign_regression_suit.py  # Benign regration suit logic implementation
-│   │   ├── build_patches.py  # Loads patches from config
-│   │   ├── config.py  # to load all configs in the app and docker run
-│   │   ├── logging.py # to perform logging and logic
-│   │   ├── patch_manager.py  # Orchestrates patch application
+│   │   ├── build_patches.py           # Loads patches from config
+│   │   ├── config.py                  # to load all configs in the app and docker run
+│   │   ├── logging.py                 # to perform logging and logic
+│   │   ├── patch_manager.py           # Orchestrates patch application
 │   │   └── request_logging.py
 │   └── patches/
-│       ├── base.py       # patch implementor class
-│       ├── input_sanitize.py      # Input normalization (prompt-level)
-│       ├── output_enforce.py      # Output filtering (post-generation)
-│       └── input_sanitize.py      # System policy injection (prompt-level) 
-├── tests/                          # Unit tests (pytest) 
-│       ├── conftest.py             # for config test
-│       ├── test_api_schema.py      # to unit test api schema
-│       ├── test_config_loading.py  # to unit test config is loaded correctly
+│       ├── base.py                 # patch implementor class
+│       ├── input_sanitize.py       # Input normalization (prompt-level)
+│       ├── output_enforce.py       # Output filtering (post-generation)
+│       └── input_sanitize.py       # System policy injection (prompt-level) 
+├── tests/                                # Unit tests (pytest) 
+│       ├── conftest.py                   # for config test
+│       ├── test_api_schema.py            # to unit test api schema
+│       ├── test_config_loading.py        # to unit test config is loaded correctly
 │       ├── test_patch_input_sanitize.py  # to unit test input sanitizer applied effectively
 │       ├── test_patch_output_enforce.py  # to unit test output enforcement applied effectively
-│       ├── test_patch_policy_prompy.py  # to unit test system policy patch effectively
-│       └── input_sanitize.py      # System policy injection (prompt-level) 
-├── Dockerfile                  # Container definition
-├── requirements.txt            # Python dependencies
-└── README.md                   # This file
+│       ├── test_patch_policy_prompy.py   # to unit test system policy patch effectively
+│       └── input_sanitize.py             # System policy injection (prompt-level) 
+├── Dockerfile                            # Container definition
+├── requirements.txt      # Python dependencies
+└── README.md             # This file
 ```
 
 ## Quick Start
@@ -459,14 +459,7 @@ python scripts/run_benign_suit_week5.py
    - `refusal_rate`: % of benign prompts incorrectly blocked
    - `avg_len`: Average response length (characters)
 
-2. **`benign_by_category_rates.csv`** - Per-category breakdown:
-   ```csv
-   condition,category,total,pass_rate,refusal_rate
-   A,factual,10,0.90,0.00
-   B,factual,10,0.80,0.10
-   A,creative,8,0.75,0.00
-   B,creative,8,0.62,0.12
-   ```
+2. **`benign_by_category_rates.csv`**  
 
 3. **`benign_a.jsonl` / `benign_b.jsonl`** - Raw response logs:
    ```json
