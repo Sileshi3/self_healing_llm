@@ -28,10 +28,6 @@ def run_scan():
     # Define the Garak report prefix Garak will add extensions like .report.jsonl and .report.html to this
     report_path_prefix = os.path.join(run_dir, "garak")  
     garak_config_path = os.path.join(project_root, "configs", "garak_rest_config.json")
-    
-    
-    #report_prefix = run_dir / "garak"
-    # report_prefix = (run_dir / "garak").resolve()
 
     print(f"Scanning Target A with probes: {probes}")
     print(f"Run ID: {run_id}")

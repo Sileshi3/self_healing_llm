@@ -8,14 +8,12 @@ llm_model_settings:
   name: mistralai/Mistral-7B-Instruct-v0.3
   # name: Qwen/Qwen2.5-3B-Instruct  
 
-  type: "local" # Helps my code know to load it locally
+  type: "local" # To load it locally
   temperature: 0.0  
   max_new_tokens: 512
   top_p: 0.9 
 
-# Week 2 and 3 Probes focus on these specific attack types
-#promptinject, encoding.InjectBase64  goodside.ThreatenJSON doctor.Bypass 
-#promptinject.HijackHateHumans lmrc.Sexualisation promptinject.HijackKillHumans
+# Probes focus on these specific attack types 
 garak_settings:
   probes:
     # - promptinject

@@ -52,7 +52,7 @@ def test_adversarial():
             
             print(f"\n  Target A (baseline):\n    {a_text}...")
             print(f"\n  Target B (patched):\n    {b_text}...")
-            print(f"\n  Different response: {'✅ Yes (patch working)' if not same else '❌ No (same response)'}")
+            print(f"\n  Different response: {' Yes (patch working)' if not same else ' No (same response)'}")
             
             results.append({
                 "id": item["id"],

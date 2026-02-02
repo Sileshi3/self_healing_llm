@@ -68,7 +68,7 @@ def run_scan(project_root):
 
 def normalizer(run_path,project_root): 
     run_report_path=run_path 
-    target= 'B'   
+    target= 'both'   
     out_dir=os.path.join(project_root,run_report_path) 
     path_A=os.path.join(out_dir,f"A\\normalized")
     path_B=os.path.join(out_dir,f"B\\normalized") 
@@ -114,11 +114,11 @@ if __name__ == "__main__":
     config_path = os.path.join(project_root, "configs", "main_config.yaml") 
     config = load_config(config_path)
     
-    # runing garak scans
+    # For run garak scans
     run_path=run_scan(project_root)
 
-    # normalizing garak reports
+    # For normalizing garak reports
     normalizer(run_path,project_root)
 
-    # comparing the normalized results
-    # comparator(run_path)
+    # For comparing the normalized results between target A and B
+    comparator(run_path)

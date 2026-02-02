@@ -4,11 +4,8 @@ from src.patches.policy_prompt import SystemPolicyPromptPatch
 from src.patches.input_sanitize import InputSanitizePatch
 from src.patches.output_enforce import OutputEnforcementPatch
 
-def build_patch_manager(cfg,ablation_cfg) -> PatchManager: 
-
-    # settings = ablation_cfg.get("ablation_setting") or {}
-    # patches = cfg.get("patches_settings") or {}
-
+def build_patch_manager(cfg,ablation_cfg) -> PatchManager:  
+    
     cfg=cfg or {}
     ablation_cfg=ablation_cfg or {}
 

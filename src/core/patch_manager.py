@@ -70,6 +70,4 @@ class PatchManager:
         patched, _logs = self.apply_output_with_logs(prompt, output, request_id=request_id)
         return patched
 
-# patch_manager = PatchManager(prompt_patches=[], output_patches=[])
-
  

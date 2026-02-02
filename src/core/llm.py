@@ -1,14 +1,3 @@
-"""
-class LLMClient:
-    def __init__(self, model_name: str):
-        self.model_name = model_name
-
-    def generate(self, prompt: str) -> str:
-        return f"[{self.model_name}] Echo: {prompt}"
-
-
-"""
-
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 from src.core.config import get_logger 
@@ -76,15 +65,15 @@ class LLMClient:
         self._generation_cache[cache_key] = generated_text
         return generated_text
 
-    # In generate()
-    def generate_with_cache(self, system_prompt: str, user_prompt: str):
-        if self.system_prompt_cache is None:
-            # First call: compute system prompt KV
-            system_ids = self.tokenizer(system_prompt, return_tensors="pt").input_ids.to(self.model.device)
-            with torch.no_grad():
-                outputs = self.model(system_ids, use_cache=True)
-                self.system_prompt_cache = outputs.past_key_values
+    # # In generate()
+    # def generate_with_cache(self, system_prompt: str, user_prompt: str):
+    #     if self.system_prompt_cache is None:
+    #         # First call: compute system prompt KV
+    #         system_ids = self.tokenizer(system_prompt, return_tensors="pt").input_ids.to(self.model.device)
+    #         with torch.no_grad():
+    #             outputs = self.model(system_ids, use_cache=True)
+    #             self.system_prompt_cache = outputs.past_key_values
         
-        # Append user prompt to cached system prompt
-        full_prompt = system_prompt + user_prompt
-        # ... (complex, requires manual generation loop)
+    #     # Append user prompt to cached system prompt
+    #     full_prompt = system_prompt + user_prompt
+    #     # ... (complex, requires manual generation loop)

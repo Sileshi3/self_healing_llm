@@ -75,8 +75,7 @@ def generate_patched(req: GenerateRequest, request: Request):
     logger.info("generate_B_called", 
                 extra={"request_id": request_id, 
                        "prompt_len": len(raw_prompt)})
-
-    # patched_prompt, prompt_logs = pm.apply_prompt_with_logs(raw_prompt, request_id=request_id)
+ 
     patched_prompt, in_logs = pm.apply_prompt_with_logs(req.prompt, request_id=request_id)
     raw_output = llm.generate(patched_prompt)
     
