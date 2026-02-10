@@ -1,3 +1,4 @@
+# This file defines the configuration loading and logging setup for the application.
 import yaml
 import json
 import json

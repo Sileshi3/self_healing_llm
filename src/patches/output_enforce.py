@@ -1,5 +1,6 @@
-from .base import OutputPatch, PatchLog
+# This file defines the OutputEnforcementPatch class, which is an OutputPatch that enforces output constraints
 
+from .base import OutputPatch, PatchLog
 class OutputEnforcementPatch(OutputPatch):
     name = "output_enforce"
 

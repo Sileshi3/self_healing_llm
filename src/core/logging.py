@@ -1,3 +1,4 @@
+# This file defines the logging functionality for patch events.
 import json
 from datetime import datetime
 from pathlib import Path

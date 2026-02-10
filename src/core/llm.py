@@ -1,9 +1,12 @@
+# This file defines the LLMClient class, which is responsible for loading a language model
+# and generating text based on prompts. 
+# It uses the Hugging Face Transformers library to load the model and tokenizer, and includes 
+# a simple caching mechanism to speed up repeated prompts.
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 from src.core.config import get_logger 
+
 logger = get_logger()   
-
-
 class LLMClient:
     def __init__(self, model_name: str, max_new_tokens: int, temperature: float = 0.0):
         self.model_name = model_name

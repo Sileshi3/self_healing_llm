@@ -1,4 +1,5 @@
- 
+# This file defines the build_patch_manager function, which constructs a PatchManager 
+# instance based on the provided configuration and ablation settings. 
 from src.core.patch_manager import PatchManager
 from src.patches.policy_prompt import SystemPolicyPromptPatch
 from src.patches.input_sanitize import InputSanitizePatch

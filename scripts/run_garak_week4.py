@@ -1,3 +1,7 @@
+# This script orchestrates the entire process of running Garak scans for both Target A and Target B, 
+# normalizing the results, and comparing them.
+# It includes functions to run the scans, normalize the reports, and compare the results, 
+# with appropriate logging and error handling.
 import subprocess
 import yaml
 import sys

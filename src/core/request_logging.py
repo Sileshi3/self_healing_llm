@@ -1,3 +1,6 @@
+# This file defines the RequestLoggingMiddleware class, which is a Starlette middleware for logging 
+# incoming HTTP requests and their responses.
+# It generates a unique request ID for each request, measures the latency, and logs relevant information
 import time
 import uuid
 from fastapi import Request

@@ -1,3 +1,4 @@
+# This script compares the normalized summary CSVs of Target A and Target B from a Garak run,
 import os
 import argparse
 import pandas as pd

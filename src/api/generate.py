@@ -1,3 +1,8 @@
+# This file defines the API endpoints for generating responses using the LLM, 
+# both with and without patches. 
+# It includes the logic for extracting text prompts from various input formats,
+#  applying the patch manager,
+
 from pdb import pm
 from fastapi import APIRouter, Request
 from src.core.llm import LLMClient
@@ -24,8 +29,7 @@ def extract_text_prompt(p) -> str:
     # plain string
     if isinstance(p, str):
         return p
-
-    # garak-like: {"turns":[{"role":"user","content":{"text":"..."}}]}
+ 
     if isinstance(p, dict):
         # common patterns
         if "text" in p and isinstance(p["text"], str):

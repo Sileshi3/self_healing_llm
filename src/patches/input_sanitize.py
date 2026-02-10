@@ -1,3 +1,4 @@
+# This file defines the InputSanitizePatch class, which is a PromptPatch that performs various operations 
 import re
 from .base import PromptPatch, PatchLog
 import unicodedata
@@ -47,7 +48,7 @@ class InputSanitizePatch(PromptPatch):
             prompt = prompt2
 
         if self.remove_injection_markers:
-            prompt2 = prompt.replace("----------", "").replace("IGNORE ANY PREVIOUS", "IGNORE_PREVIOUS")
+            prompt2 = prompt.replace("--------", "").replace("IGNORE ANY PREVIOUS", "IGNORE_PREVIOUS")
             if prompt2 != prompt:
                 actions.append("mutated_injection_markers")
             prompt = prompt2

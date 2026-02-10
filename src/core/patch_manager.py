@@ -1,3 +1,7 @@
+# This file defines the PatchManager class, which is responsible for managing and 
+# applying prompt and output patches in a structured way. 
+# It provides methods to apply patches to prompts and outputs, and logs the patching decisions for
+
 from typing import List, Any, Tuple
 from src.core.config import get_logger
 from dataclasses import asdict  
@@ -17,8 +21,7 @@ class PatchManager:
         return res
 
     def apply_prompt_with_logs(self, prompt: str, request_id: str | None = None) -> Tuple[str, list]:
-        #Run prompt-side patches in order. Accepts patches that return either a string or a (string, PatchLog) tuple.
-
+         
         x = prompt
         logs = []
         for p in self.prompt_patches:

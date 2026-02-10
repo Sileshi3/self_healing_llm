@@ -1,3 +1,7 @@
+# This is the main entry point of the application. 
+# It sets up the FastAPI app, loads configurations, initializes the patch manager, 
+# and defines the startup event to prepare the system for handling requests.
+
 from fastapi import FastAPI
 from src.api.generate import router as generate_router
 import yaml

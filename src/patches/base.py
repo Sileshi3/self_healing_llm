@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+# This file defines the base classes and data structures for the patching system,
+# including the PatchLog, PromptPatch, and OutputPatch classes.
+ 
 from typing import Any, Dict, Optional
 from dataclasses import dataclass, field
 
@@ -8,7 +10,6 @@ class PatchLog:
     triggered: bool
     action: str 
     details: Dict[str, Any] = field(default_factory=dict)
-
 
 class PromptPatch:
     name: str = "prompt_patch"

@@ -1,3 +1,4 @@
+# This file defines the SystemPolicyPromptPatch class, which is a PromptPatch that prepends a system policy  
 from .base import PromptPatch, PatchLog
 
 class SystemPolicyPromptPatch(PromptPatch):
